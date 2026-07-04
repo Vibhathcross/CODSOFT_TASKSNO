@@ -311,39 +311,55 @@
       scene.add(icosahedron);
 
       // --- Neon Rain Setup ---
-      const rainCount = 100;
-      const rainPositions = new Float32Array(rainCount * 6);
+      const rainCount = 120;
+      const rainPositions = new Float32Array(rainCount * 3); // 1 vertex per point (x,y,z)
       const rainSpeeds = [];
-      const rainLengths = [];
 
       for (let i = 0; i < rainCount; i++) {
-        const x = (Math.random() - 0.5) * 15;
-        const y = Math.random() * 20 - 10;
-        const z = Math.random() * 4 - 3;
-        const len = 0.15 + Math.random() * 0.25;
-        const speed = 0.08 + Math.random() * 0.12;
-        
-        rainSpeeds.push(speed);
-        rainLengths.push(len);
-
-        rainPositions[i * 6] = x;
-        rainPositions[i * 6 + 1] = y;
-        rainPositions[i * 6 + 2] = z;
-        rainPositions[i * 6 + 3] = x;
-        rainPositions[i * 6 + 4] = y - len;
-        rainPositions[i * 6 + 5] = z;
+        rainPositions[i * 3] = (Math.random() - 0.5) * 15;
+        rainPositions[i * 3 + 1] = Math.random() * 20 - 10;
+        rainPositions[i * 3 + 2] = Math.random() * 4 - 2;
+        rainSpeeds.push(0.08 + Math.random() * 0.12);
       }
 
       const rainGeometry = new THREE.BufferGeometry();
       rainGeometry.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
 
-      const rainMaterial = new THREE.LineBasicMaterial({
-        color: 0xD32F2F,
+      // Create vertical neon dash texture programmatically
+      const canvasTextureElement = document.createElement('canvas');
+      canvasTextureElement.width = 16;
+      canvasTextureElement.height = 64;
+      const textureCtx = canvasTextureElement.getContext('2d');
+
+      // Reddish outer neon glow
+      const glowGradient = textureCtx.createLinearGradient(8, 0, 8, 64);
+      glowGradient.addColorStop(0, 'rgba(255, 0, 51, 0)');
+      glowGradient.addColorStop(0.3, 'rgba(255, 0, 51, 0.35)');
+      glowGradient.addColorStop(1, 'rgba(255, 0, 51, 0.85)');
+      textureCtx.fillStyle = glowGradient;
+      textureCtx.fillRect(4, 0, 8, 64);
+
+      // Hot white core
+      const coreGradient = textureCtx.createLinearGradient(8, 0, 8, 64);
+      coreGradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
+      coreGradient.addColorStop(0.4, 'rgba(255, 255, 255, 0.45)');
+      coreGradient.addColorStop(1, 'rgba(255, 255, 255, 1)');
+      textureCtx.fillStyle = coreGradient;
+      textureCtx.fillRect(7, 0, 2, 64);
+
+      const rainTexture = new THREE.CanvasTexture(canvasTextureElement);
+
+      const rainMaterial = new THREE.PointsMaterial({
+        size: 0.35,
+        map: rainTexture,
         transparent: true,
-        opacity: 0.6
+        opacity: 0.8,
+        depthWrite: false,
+        blending: THREE.NormalBlending
       });
 
-      const rain = new THREE.LineSegments(rainGeometry, rainMaterial);
+      const rain = new THREE.Points(rainGeometry, rainMaterial);
+      rain.frustumCulled = false;
       scene.add(rain);
 
       const clock = new THREE.Clock();
@@ -357,26 +373,17 @@
         // Update Neon Rain Positions
         const positions = rainGeometry.attributes.position.array;
         for (let i = 0; i < rainCount; i++) {
-          let y1 = positions[i * 6 + 1];
-          let y2 = positions[i * 6 + 4];
+          let y = positions[i * 3 + 1];
+          y -= rainSpeeds[i];
           
-          y1 -= rainSpeeds[i];
-          y2 -= rainSpeeds[i];
-          
-          if (y1 < -10) {
-            const x = (Math.random() - 0.5) * 15;
-            y1 = 10;
-            y2 = 10 - rainLengths[i];
-            const z = Math.random() * 4 - 3;
-            
-            positions[i * 6] = x;
-            positions[i * 6 + 2] = z;
-            positions[i * 6 + 3] = x;
-            positions[i * 6 + 5] = z;
+          // Reset if below viewport bounds
+          if (y < -10) {
+            positions[i * 3] = (Math.random() - 0.5) * 15;
+            y = 10;
+            positions[i * 3 + 2] = Math.random() * 4 - 2;
           }
           
-          positions[i * 6 + 1] = y1;
-          positions[i * 6 + 4] = y2;
+          positions[i * 3 + 1] = y;
         }
         rainGeometry.attributes.position.needsUpdate = true;
 
