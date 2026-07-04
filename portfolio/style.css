@@ -355,39 +355,29 @@ section {
 .hero-profile-container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   flex-shrink: 0;
 }
 
-.hero-profile-frame {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  width: auto;
-  height: 380px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  position: relative;
-  animation: float-profile 6s ease-in-out infinite;
-}
-
+/* No frame — just a floating transparent image */
 .hero-profile-img {
-  height: 100%;
+  height: 420px;
   width: auto;
   object-fit: contain;
-  background: transparent !important;
-  filter: drop-shadow(2px 6px 18px rgba(0, 0, 0, 0.15));
+  display: block;
+  background: transparent;
+  filter: drop-shadow(0px 12px 24px rgba(0, 0, 0, 0.18));
+  animation: float-profile 6s ease-in-out infinite;
   transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.hero-profile-frame:hover .hero-profile-img {
-  transform: scale(1.04);
+.hero-profile-img:hover {
+  transform: scale(1.03) translateY(-4px);
 }
 
 @keyframes float-profile {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-10px); }
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-14px); }
 }
 
 .hero-card {
@@ -1665,9 +1655,8 @@ body.admin-active .add-project-card {
     text-align: center;
   }
   
-  .hero-profile-frame {
-    width: auto;
-    height: 280px;
+  .hero-profile-img {
+    height: 300px;
   }
   
   .hero-card {
