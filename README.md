@@ -6,7 +6,6 @@ The repository is structured to showcase multiple project modules as subdirector
 
 ## Repository Structure
 
-- [`/index.html`](./index.html) - Central landing directory page to navigate between tasks.
 - [`/portfolio/`](./portfolio/) - **Task 1**: Premium Neomorphic 3D Portfolio.
 
 ---
