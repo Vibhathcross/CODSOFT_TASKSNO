@@ -1080,6 +1080,43 @@ html {
   transform: translate3d(0, -50%, 0);
 }
 
+/* Permanent Active Section Display Card */
+.scroll-active-box {
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translate3d(0, -50%, 0);
+  padding: 10px 18px;
+  background-color: var(--bg-color);
+  box-shadow: var(--neo-raised-shadow);
+  border-radius: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 130px;
+  text-align: center;
+  z-index: 10;
+  pointer-events: none; /* Let clicks pass through if overlapping */
+}
+
+.active-section-text {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--accent-red);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1), transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: opacity, transform;
+  display: inline-block;
+}
+
+.active-section-text.changing {
+  opacity: 0;
+  transform: translate3d(-10px, 0, 0);
+}
+
 /* Hide on mobile devices so it doesn't clutter the layout */
 @media (max-width: 768px) {
   .custom-scroll-nav {

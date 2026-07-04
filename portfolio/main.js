@@ -239,6 +239,12 @@ function initAnimations() {
   const sections = ['hero', 'capabilities', 'projects', 'motivation'];
   const navBtns = document.querySelectorAll('.nav-btn');
   const scrollMarkers = document.querySelectorAll('.scroll-marker');
+  const sectionNames = {
+    'hero': 'Home',
+    'capabilities': 'Capabilities',
+    'projects': 'Projects',
+    'motivation': 'Connect'
+  };
 
   sections.forEach(secId => {
     ScrollTrigger.create({
@@ -264,6 +270,9 @@ function initAnimations() {
               marker.classList.remove('active');
             }
           });
+
+          // Update permanent active section box text
+          updateActiveSectionLabel(sectionNames[secId]);
         }
       }
     });
@@ -434,4 +443,18 @@ function initCustomScrollNav() {
 
   window.addEventListener('scroll', updateScrollProgress, { passive: true });
   updateScrollProgress(); // Run once initially to align on load
+}
+
+/**
+ * Update the floating active section label box with smooth fade slide transition
+ */
+function updateActiveSectionLabel(name) {
+  const labelText = document.getElementById('active-section-text');
+  if (!labelText || labelText.innerText === name) return;
+
+  labelText.classList.add('changing');
+  setTimeout(() => {
+    labelText.innerText = name;
+    labelText.classList.remove('changing');
+  }, 200);
 }
