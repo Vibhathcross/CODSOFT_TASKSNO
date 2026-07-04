@@ -387,6 +387,14 @@ function initCustomScrollNav() {
   if (!scrollBead || !markers.length) return;
 
   // Update active bead offset position relative to scroll height percentage
+  const markerPositions = {
+    'hero': 0,
+    'capabilities': 33.33,
+    'projects': 66.66,
+    'motivation': 100
+  };
+  const threshold = 4.0; // Trigger threshold percentage
+
   function updateScrollProgress() {
     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
     if (scrollHeight <= 0) return;
@@ -395,6 +403,21 @@ function initCustomScrollNav() {
     // Boundary clamp between 0 and 100
     const clampedPercent = Math.max(0, Math.min(100, percent));
     scrollBead.style.top = `${clampedPercent}%`;
+
+    // Dynamic marker pulsing on active bead reach
+    markers.forEach(marker => {
+      const section = marker.getAttribute('data-section');
+      const markerPercent = markerPositions[section];
+      const distance = Math.abs(clampedPercent - markerPercent);
+      
+      if (distance < threshold) {
+        if (!marker.classList.contains('reached')) {
+          marker.classList.add('reached');
+        }
+      } else {
+        marker.classList.remove('reached');
+      }
+    });
   }
 
   // Smooth scroll to targeted section on click

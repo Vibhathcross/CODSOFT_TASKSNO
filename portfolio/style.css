@@ -1030,8 +1030,28 @@ html {
 
 .scroll-marker:hover, .scroll-marker.active {
   border-color: var(--accent-red);
-  transform: translate3d(-50%, -50%, 0) scale(1.35);
+  transform: translate3d(-50%, -50%, 0) scale(1.2);
   box-shadow: inset 1px 1px 2px var(--shadow-dark), inset -1px -1px 2px var(--shadow-light);
+}
+
+.scroll-marker.reached {
+  animation: marker-pulse 1s cubic-bezier(0.24, 0, 0.38, 1);
+  border-color: var(--accent-red);
+  background-color: var(--accent-red);
+  transform: translate3d(-50%, -50%, 0) scale(1.45);
+  box-shadow: 0 0 10px rgba(211, 47, 47, 0.7);
+}
+
+@keyframes marker-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.8);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(211, 47, 47, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(211, 47, 47, 0);
+  }
 }
 
 /* Popup Text Labels */
