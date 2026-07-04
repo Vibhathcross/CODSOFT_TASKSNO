@@ -348,15 +348,19 @@ function initFullscreen() {
 /**
  * Custom Scroll Progress Navigator Controller
  */
-/**
- * Custom Scroll Progress Navigator Controller
- */
 function initCustomScrollNav() {
   const scrollBead = document.getElementById('scroll-bead');
   const markers = document.querySelectorAll('.scroll-marker');
+  const navBtns = document.querySelectorAll('.nav-btn');
   if (!scrollBead || !markers.length) return;
 
-  // Update active bead offset position relative to scroll height percentage
+  const sections = ['hero', 'capabilities', 'projects', 'motivation'];
+  const sectionNames = {
+    'hero': 'Home',
+    'capabilities': 'Capabilities',
+    'projects': 'Projects',
+    'motivation': 'Connect'
+  };
   const markerPositions = {
     'hero': 0,
     'capabilities': 33.33,
@@ -389,8 +393,52 @@ function initCustomScrollNav() {
       }
     });
 
-    // Sync all header highlights, marker highlights, and display labels
-    updateActiveSectionState();
+    // Determine current active section robustly
+    let activeSecId = 'hero';
+    const isAtBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 60);
+
+    if (isAtBottom) {
+      activeSecId = 'motivation';
+    } else if (window.scrollY < 100) {
+      activeSecId = 'hero';
+    } else {
+      let minDistance = Infinity;
+      const viewportCenter = window.innerHeight / 2;
+
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const sectionCenter = rect.top + rect.height / 2;
+          const distance = Math.abs(viewportCenter - sectionCenter);
+          if (distance < minDistance) {
+            minDistance = distance;
+            activeSecId = id;
+          }
+        }
+      });
+    }
+
+    // Synchronize Header Nav Buttons
+    navBtns.forEach(btn => {
+      if (btn.getAttribute('href') === `#${activeSecId}`) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    // Synchronize Custom Scroll Markers active state
+    markers.forEach(marker => {
+      if (marker.getAttribute('data-section') === activeSecId) {
+        marker.classList.add('active');
+      } else {
+        marker.classList.remove('active');
+      }
+    });
+
+    // Update Floating Active Section Label Box
+    updateActiveSectionLabel(sectionNames[activeSecId]);
   }
 
   // Smooth scroll to targeted section on click
@@ -407,67 +455,6 @@ function initCustomScrollNav() {
 
   window.addEventListener('scroll', updateScrollProgress, { passive: true });
   updateScrollProgress(); // Run once initially to align on load
-}
-
-/**
- * Unified calculation of the current active section occupying the screen
- * Updates nav buttons, scroll markers, and active labels in sync
- */
-function updateActiveSectionState() {
-  const sections = ['hero', 'capabilities', 'projects', 'motivation'];
-  const navBtns = document.querySelectorAll('.nav-btn');
-  const scrollMarkers = document.querySelectorAll('.scroll-marker');
-  const sectionNames = {
-    'hero': 'Home',
-    'capabilities': 'Capabilities',
-    'projects': 'Projects',
-    'motivation': 'Connect'
-  };
-  
-  let activeSec = 'hero';
-  const scrollY = window.scrollY;
-  const viewportCenter = scrollY + window.innerHeight / 2;
-
-  // Find section occupying viewport center
-  sections.forEach(secId => {
-    const el = document.getElementById(secId);
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      const elementTop = rect.top + scrollY;
-      const elementBottom = elementTop + rect.height;
-      if (viewportCenter >= elementTop && viewportCenter <= elementBottom) {
-        activeSec = secId;
-      }
-    }
-  });
-
-  // Edge cases: top and bottom limits
-  if (scrollY < 50) {
-    activeSec = 'hero';
-  } else if (scrollY + window.innerHeight >= document.documentElement.scrollHeight - 50) {
-    activeSec = 'motivation';
-  }
-
-  // Update header buttons
-  navBtns.forEach(btn => {
-    if (btn.getAttribute('href') === `#${activeSec}`) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
-  });
-
-  // Update custom scroll markers
-  scrollMarkers.forEach(marker => {
-    if (marker.getAttribute('data-section') === activeSec) {
-      marker.classList.add('active');
-    } else {
-      marker.classList.remove('active');
-    }
-  });
-
-  // Update permanent active section box text
-  updateActiveSectionLabel(sectionNames[activeSec]);
 }
 
 /**
