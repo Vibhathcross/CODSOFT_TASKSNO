@@ -371,14 +371,55 @@ section {
   width: 100%;
   max-width: 680px;
   margin: 0 auto;
-  padding: 60px 45px;
+  padding: 3px; /* border thickness */
   border-radius: 30px;
-  background-color: var(--bg-color);
-  box-shadow: var(--neo-raised-shadow);
-  text-align: center;
-  will-change: transform, opacity;
-  box-sizing: border-box;
+  background-color: #171717;
+  box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.5), 0px 0px 3px 1px #00000088;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
   z-index: 5;
+  box-sizing: border-box;
+}
+
+/* Glowing rotating red border gradient */
+.hero-card::before {
+  content: '';
+  position: absolute;
+  width: 170%;
+  height: 170%;
+  background: conic-gradient(
+    from 0deg, 
+    transparent 15%, 
+    var(--accent-red) 35%, 
+    #FF1744 50%, 
+    var(--accent-red) 65%, 
+    transparent 85%
+  );
+  animation: rotate-border 4s linear infinite;
+  z-index: 0;
+}
+
+@keyframes rotate-border {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Inner content area overlapping the rotating border */
+.hero-card-content {
+  width: 100%;
+  height: 100%;
+  border-radius: 27px; /* slightly smaller to fit inside border */
+  background: #171717;
+  z-index: 1;
+  padding: 55px 45px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .hero-title {
@@ -392,8 +433,8 @@ section {
 
 .hero-subtitle {
   font-size: 1.2rem;
-  line-height: 1.7;
-  color: var(--text-color);
+  line-height: 1.75;
+  color: #E0E0E0; /* lighter gray for dark background readability */
   margin-bottom: 35px;
   font-weight: 400;
 }
@@ -404,6 +445,27 @@ section {
   justify-content: center;
   align-items: center;
   gap: 18px;
+}
+
+/* Dark themed neomorphic buttons inside the hero card */
+.hero-card-content .neomorphic-btn {
+  background-color: #1b1b1b;
+  box-shadow: 4px 4px 10px #0a0a0a, -4px -4px 10px #2c2c2c;
+  color: #FFFFFF;
+}
+
+.hero-card-content .neomorphic-btn:hover {
+  box-shadow: 6px 6px 14px #080808, -6px -6px 14px #323232;
+  color: #FF1744;
+}
+
+.hero-card-content .neomorphic-btn:active {
+  box-shadow: inset 2px 2px 5px #080808, inset -2px -2px 5px #323232;
+}
+
+.hero-card-content .primary-btn {
+  color: var(--accent-red);
+  border: 1px solid rgba(211, 47, 47, 0.35);
 }
 
 .neomorphic-btn {
