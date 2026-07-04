@@ -479,7 +479,7 @@ section {
   100% { transform: translate3d(-50%, 0, 0); opacity: 1; }
 }
 
-/* Page 2: Core Capabilities (Circular Dials) */
+/* Page 2: Core Capabilities (Accordion Grid) */
 .capabilities-section {
   display: flex;
   align-items: center;
@@ -491,160 +491,169 @@ section {
 
 .capabilities-grid {
   display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  justify-content: space-between;
+  flex-direction: row;
+  align-items: stretch;
   width: 100%;
+  height: 420px;
+  gap: 20px;
 }
 
 .capability-card {
   flex: 1;
-  min-width: 280px;
+  height: 100%;
   background-color: var(--bg-color);
-  border-radius: 24px;
+  border-radius: 28px;
   box-shadow: var(--neo-raised-shadow);
-  padding: 30px;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  transition: var(--transition-smooth);
-  will-change: transform, box-shadow;
-}
-
-.capability-card:hover {
-  transform: translate3d(0, -4px, 0);
-}
-
-.dial-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  width: 100%;
-}
-
-.neomorphic-dial {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background-color: var(--bg-color);
-  box-shadow: var(--neo-raised-shadow);
-  border: none;
-  cursor: pointer;
-  outline: none;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  position: relative;
-  transition: var(--transition-smooth);
-  will-change: transform, box-shadow;
-}
-
-.neomorphic-dial:hover {
-  transform: scale(1.03);
-}
-
-.dial-inner {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  box-shadow: var(--neo-inset-shadow);
-  display: flex;
   align-items: center;
-  justify-content: center;
   position: relative;
-}
-
-.dial-indicator {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  width: 4px;
-  height: 12px;
-  background-color: var(--text-muted);
-  border-radius: 2px;
-  transform-origin: 50% 38px;
-  transform: translate3d(-50%, 0, 0) rotate(0deg);
-  transition: var(--transition-smooth);
-}
-
-.dial-label {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--text-color);
-  letter-spacing: 1px;
-}
-
-.capability-label {
-  margin-top: 20px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text-color);
-  text-align: center;
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #BDBDBD;
-  margin-top: 12px;
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
-  transition: var(--transition-smooth);
-}
-
-/* Dial Interactive (Pressed) States */
-.capability-card.active {
-  box-shadow: var(--neo-inset-shadow);
-}
-
-.capability-card.active .neomorphic-dial {
-  box-shadow: var(--neo-inset-shadow);
-}
-
-.capability-card.active .dial-inner {
-  box-shadow: var(--neo-raised-shadow);
-}
-
-.capability-card.active .dial-indicator {
-  background-color: var(--accent-red);
-  transform: translate3d(-50%, 0, 0) rotate(135deg);
-}
-
-.capability-card.active .dial-label {
-  color: var(--accent-red);
-}
-
-.capability-card.active .status-dot {
-  background-color: var(--accent-red);
-  box-shadow: 0 0 8px var(--accent-red-glow);
-}
-
-/* Expandable Description */
-.capability-content-wrapper {
-  width: 100%;
-  max-height: 0;
   overflow: hidden;
-  opacity: 0;
-  transition: max-height 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
-  will-change: max-height, opacity;
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  cursor: pointer;
+  padding: 20px;
 }
 
-.capability-card.active .capability-content-wrapper {
+/* Expanded Card Size */
+.capability-card:hover,
+.capability-card.active {
+  flex: 4.5;
+}
+
+/* Vertical collapsed title wrapper */
+.capability-title-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.capability-title-wrapper h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--accent-red);
+  text-transform: uppercase;
+  transform: rotate(-90deg);
+  white-space: nowrap;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), color 0.3s;
+}
+
+/* When active or hovered, fade out collapsed title wrapper */
+.capability-card:hover .capability-title-wrapper,
+.capability-card.active .capability-title-wrapper {
+  opacity: 0;
+  transform: scale(0.9) rotate(90deg);
+}
+
+/* Details wrapper (contains expanded dials and descriptions) */
+.capability-details-wrapper {
+  opacity: 0;
+  visibility: hidden;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  transform: scale(0.95);
+  transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1) 0.1s, 
+              transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) 0.1s, 
+              visibility 0.4s;
+}
+
+.capability-card:hover .capability-details-wrapper,
+.capability-card.active .capability-details-wrapper {
   opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.capability-expanded-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent-red);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+  text-align: center;
 }
 
 .capability-content {
-  padding-top: 20px;
   text-align: center;
-  border-top: 1px dashed var(--shadow-dark);
+  width: 100%;
+  max-width: 400px;
+  border-top: 1.5px dashed var(--shadow-dark);
+  padding-top: 18px;
 }
 
 .capability-content p {
   font-size: 0.95rem;
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--text-color);
+  margin-bottom: 12px;
+}
+
+/* Add Capability specific styles */
+.add-cap-card {
+  border: 2.5px dashed var(--shadow-dark);
+  box-shadow: var(--neo-inset-shadow);
+  display: flex;
+}
+
+.add-cap-card:hover {
+  border-color: var(--accent-red);
+  background-color: rgba(211, 47, 47, 0.02);
+}
+
+.add-cap-card .capability-title-wrapper h3 {
+  color: var(--text-muted);
+}
+
+.add-cap-card:hover .capability-title-wrapper h3 {
+  color: var(--accent-red);
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .capabilities-grid {
+    flex-direction: column;
+    height: auto;
+    gap: 15px;
+  }
+  
+  .capability-card {
+    width: 100%;
+    height: 75px;
+    padding: 15px;
+  }
+  
+  .capability-card:hover {
+    flex: 1; /* Disable desktop hover scale on mobile */
+  }
+  
+  .capability-card.active {
+    height: 390px;
+  }
+  
+  .capability-title-wrapper h3 {
+    transform: rotate(0deg);
+  }
+  
+  .capability-card:hover .capability-title-wrapper,
+  .capability-card.active .capability-title-wrapper {
+    transform: scale(0.9) translateY(-10px);
+  }
 }
 
 /* Page 3: Technical Projects */

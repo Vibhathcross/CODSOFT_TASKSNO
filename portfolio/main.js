@@ -433,36 +433,22 @@ function initCapabilities() {
   const cards = document.querySelectorAll('.capability-card');
 
   cards.forEach(card => {
-    const dial = card.querySelector('.neomorphic-dial');
-    const wrapper = card.querySelector('.capability-content-wrapper');
-    const content = card.querySelector('.capability-content');
+    card.addEventListener('click', (e) => {
+      // Do not toggle active state if clicking on admin buttons or trigger widgets
+      if (e.target.closest('.admin-edit-btn') || e.target.closest('#add-cap-trigger')) {
+        return;
+      }
 
-    if (!dial || !wrapper || !content) return;
-
-    dial.addEventListener('click', (e) => {
-      e.stopPropagation();
       const isActive = card.classList.contains('active');
 
-      if (isActive) {
-        // Collapse currently active dial
-        card.classList.remove('active');
-        wrapper.style.maxHeight = '0px';
-        dial.setAttribute('aria-expanded', 'false');
-      } else {
-        // Close all other active dials (Accordion style)
-        cards.forEach(otherCard => {
-          if (otherCard.classList.contains('active')) {
-            otherCard.classList.remove('active');
-            otherCard.querySelector('.capability-content-wrapper').style.maxHeight = '0px';
-            otherCard.querySelector('.neomorphic-dial').setAttribute('aria-expanded', 'false');
-          }
-        });
+      // Collapse all cards first (accordion behavior)
+      cards.forEach(otherCard => {
+        otherCard.classList.remove('active');
+      });
 
-        // Expand this dial
+      // Toggle this card
+      if (!isActive) {
         card.classList.add('active');
-        // Set dynamic height from DOM scrollHeight to execute smooth transition
-        wrapper.style.maxHeight = `${content.scrollHeight + 20}px`;
-        dial.setAttribute('aria-expanded', 'true');
       }
     });
   });
@@ -471,11 +457,7 @@ function initCapabilities() {
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.capability-card')) {
       cards.forEach(card => {
-        if (card.classList.contains('active')) {
-          card.classList.remove('active');
-          card.querySelector('.capability-content-wrapper').style.maxHeight = '0px';
-          card.querySelector('.neomorphic-dial').setAttribute('aria-expanded', 'false');
-        }
+        card.classList.remove('active');
       });
     }
   });
@@ -718,34 +700,29 @@ function renderCapabilities() {
   if (!container) return;
 
   let html = capabilitiesData.map(cap => {
-    const angle = (cap.percentage / 100) * 360;
-    const label = cap.label || cap.title.substring(0, 3).toUpperCase();
     return `
       <div class="capability-card" id="cap-${cap.id}">
-        <!-- Admin Controls overlay -->
-        <div class="admin-controls">
-          <button class="admin-edit-btn edit-cap-trigger" data-id="${cap.id}" aria-label="Edit Capability">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-          </button>
+        <!-- Vertical Title (visible when collapsed) -->
+        <div class="capability-title-wrapper">
+          <h3>${cap.title}</h3>
         </div>
-        
-        <div class="dial-container">
-          <button class="neomorphic-dial" aria-label="Toggle ${cap.title} details" aria-expanded="false">
-            <div class="dial-inner">
-              <div class="dial-indicator" style="transform: translate(-50%, -100%) rotate(${angle}deg);"></div>
-              <span class="dial-label">${label}</span>
-            </div>
-          </button>
-          <h3 class="capability-label">${cap.title}</h3>
-          <div class="status-dot ${cap.percentage >= 80 ? 'active' : ''}"></div>
-        </div>
-        
-        <div class="capability-content-wrapper">
+
+        <!-- Details Content (revealed on hover/active) -->
+        <div class="capability-details-wrapper">
+          <!-- Admin Controls overlay -->
+          <div class="admin-controls">
+            <button class="admin-edit-btn edit-cap-trigger" data-id="${cap.id}" aria-label="Edit Capability">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </button>
+          </div>
+
+          <h3 class="capability-expanded-title">${cap.title}</h3>
+          
           <div class="capability-content">
-            <p>${cap.description} <strong>(Engineered Capability Level: ${cap.percentage}%)</strong></p>
+            <p>${cap.description}</p>
           </div>
         </div>
       </div>
@@ -754,8 +731,10 @@ function renderCapabilities() {
 
   if (isAdminMode) {
     html += `
-      <div class="add-project-card" id="add-cap-trigger" style="min-height: 200px; width: 100%;">
-        <span>+ Add New Capability</span>
+      <div class="capability-card add-cap-card" id="add-cap-trigger">
+        <div class="capability-title-wrapper">
+          <h3>+ Add Capability</h3>
+        </div>
       </div>
     `;
   }
@@ -1078,7 +1057,6 @@ function initCapabilityEditor() {
         document.getElementById('edit-cap-id').value = cap.id;
         document.getElementById('edit-cap-title').value = cap.title;
         document.getElementById('edit-cap-label').value = cap.label || cap.title.substring(0, 3).toUpperCase();
-        document.getElementById('edit-cap-percent').value = cap.percentage;
         document.getElementById('edit-cap-desc').value = cap.description;
         
         deleteBtn.style.display = "block";
@@ -1105,8 +1083,16 @@ function initCapabilityEditor() {
     const id = document.getElementById('edit-cap-id').value;
     const title = document.getElementById('edit-cap-title').value;
     const label = document.getElementById('edit-cap-label').value.substring(0, 3).toUpperCase();
-    const percentage = parseInt(document.getElementById('edit-cap-percent').value);
     const description = document.getElementById('edit-cap-desc').value;
+
+    // Preserve existing percentage when editing, or default to 90 for new ones
+    let percentage = 90;
+    if (id) {
+      const cap = capabilitiesData.find(c => c.id == id);
+      if (cap) {
+        percentage = cap.percentage;
+      }
+    }
 
     const payload = {
       title,
