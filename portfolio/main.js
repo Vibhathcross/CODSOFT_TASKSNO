@@ -585,7 +585,7 @@ function renderCapabilities() {
   const container = document.getElementById('capabilities-grid');
   if (!container) return;
 
-  container.innerHTML = capabilitiesData.map(cap => {
+  let html = capabilitiesData.map(cap => {
     const angle = (cap.percentage / 100) * 360;
     const label = cap.label || cap.title.substring(0, 3).toUpperCase();
     return `
@@ -619,6 +619,16 @@ function renderCapabilities() {
       </div>
     `;
   }).join('');
+
+  if (isAdminMode) {
+    html += `
+      <div class="add-project-card" id="add-cap-trigger" style="min-height: 200px; width: 100%;">
+        <span>+ Add New Capability</span>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
 }
 
 /**
@@ -695,6 +705,14 @@ function initCMS() {
     adminModal.classList.add('open');
     updateAdminStatusUI();
   });
+
+  const preloaderAdminBtn = document.getElementById('preloader-admin-btn');
+  if (preloaderAdminBtn) {
+    preloaderAdminBtn.addEventListener('click', () => {
+      adminModal.classList.add('open');
+      updateAdminStatusUI();
+    });
+  }
 
   // Close modal
   const closeModal = () => adminModal.classList.remove('open');
@@ -900,8 +918,22 @@ function initCapabilityEditor() {
   const modal = document.getElementById('capability-editor-modal');
   const closeBtn = document.getElementById('cap-editor-modal-close');
   const form = document.getElementById('cap-editor-form');
+  const deleteBtn = document.getElementById('edit-cap-delete');
+  const editorTitle = document.getElementById('cap-editor-title');
 
-  if (!modal || !form) return;
+  if (!modal || !form || !deleteBtn || !editorTitle) return;
+
+  // Open modal for Adding a new capability
+  document.addEventListener('click', (e) => {
+    const addTrigger = e.target.closest('#add-cap-trigger');
+    if (addTrigger) {
+      editorTitle.innerText = "Add Capability";
+      form.reset();
+      document.getElementById('edit-cap-id').value = "";
+      deleteBtn.style.display = "none";
+      modal.classList.add('open');
+    }
+  });
 
   // Open modal for Editing capability
   document.addEventListener('click', (e) => {
@@ -910,10 +942,14 @@ function initCapabilityEditor() {
       const capId = editTrigger.getAttribute('data-id');
       const cap = capabilitiesData.find(c => c.id == capId);
       if (cap) {
+        editorTitle.innerText = "Edit Capability";
         document.getElementById('edit-cap-id').value = cap.id;
         document.getElementById('edit-cap-title').value = cap.title;
+        document.getElementById('edit-cap-label').value = cap.label || cap.title.substring(0, 3).toUpperCase();
         document.getElementById('edit-cap-percent').value = cap.percentage;
         document.getElementById('edit-cap-desc').value = cap.description;
+        
+        deleteBtn.style.display = "block";
         modal.classList.add('open');
       }
     }
@@ -926,29 +962,58 @@ function initCapabilityEditor() {
     if (e.target === modal) closeModal();
   });
 
-  // Form Submit (Save / Update)
+  // Form Submit (Save / Update / Insert)
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!supabaseClient) {
-      alert("Error: Supabase database is not initialized.");
+      alert("Error: Supabase database is not initialized. Setup your credentials file first.");
       return;
     }
 
     const id = document.getElementById('edit-cap-id').value;
+    const title = document.getElementById('edit-cap-title').value;
+    const label = document.getElementById('edit-cap-label').value.substring(0, 3).toUpperCase();
     const percentage = parseInt(document.getElementById('edit-cap-percent').value);
     const description = document.getElementById('edit-cap-desc').value;
 
+    const payload = {
+      title,
+      label,
+      percentage,
+      description
+    };
+
     try {
-      const { error } = await supabaseClient.from('capabilities').update({
-        percentage,
-        description
-      }).eq('id', id);
-      
-      if (error) throw error;
-      alert("Capability updated successfully!");
+      if (id) {
+        // UPDATE existing capability
+        const { error } = await supabaseClient.from('capabilities').update(payload).eq('id', id);
+        if (error) throw error;
+        alert("Capability updated successfully!");
+      } else {
+        // INSERT new capability
+        const { error } = await supabaseClient.from('capabilities').insert([payload]);
+        if (error) throw error;
+        alert("Capability added successfully!");
+      }
       location.reload();
     } catch (err) {
       alert("Error saving capability: " + err.message);
+    }
+  });
+
+  // Delete Capability
+  deleteBtn.addEventListener('click', async () => {
+    const id = document.getElementById('edit-cap-id').value;
+    if (!id) return;
+    if (confirm("Are you sure you want to delete this capability?")) {
+      try {
+        const { error } = await supabaseClient.from('capabilities').delete().eq('id', id);
+        if (error) throw error;
+        alert("Capability deleted successfully!");
+        location.reload();
+      } catch (err) {
+        alert("Error deleting capability: " + err.message);
+      }
     }
   });
 }
