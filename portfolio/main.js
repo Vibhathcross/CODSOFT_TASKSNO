@@ -1,11 +1,68 @@
+import { SUPABASE_CONFIG } from './supabase_config.js';
+
+// Global state variables
+let supabaseClient = null;
+let isAdminMode = false;
+let projectsData = [];
+let capabilitiesData = [];
+
+// Fallback values if Supabase is not connected
+const fallbackProjects = [
+  {
+    id: "p1",
+    title: "Jasmin: The Intelligent Assistant Framework",
+    category: "Featured System",
+    description: "A custom, long-term AI assistant project featuring a dedicated React user interface, local offline wake-word recognition engines, and asynchronous Telegram bot integration operating on a secure local/cloud hybrid strategy.",
+    tags: "React, AI/Voice, Hybrid Architecture, Node.js",
+    link: "https://github.com/Vibhathcross"
+  },
+  {
+    id: "p2",
+    title: "Secure Access Gateway",
+    category: "Security Simulation",
+    description: "An interactive, browser-based web application utilizing the Web Audio API and hardware-accelerated CSS keyframe animations to create a highly responsive, engineered security simulation interface.",
+    tags: "Web Audio API, CSS3 Matrix, Interactive UI",
+    link: "https://github.com/Vibhathcross"
+  }
+];
+
+const fallbackCapabilities = [
+  {
+    id: "c1",
+    title: "Systems Programming",
+    label: "SYS",
+    percentage: 85,
+    description: "Proficient in C and Linux system calls. Focused on low-level OS architecture, process control (fork/exec), and deterministic memory management algorithms."
+  },
+  {
+    id: "c2",
+    title: "Data Science & ML",
+    label: "DS",
+    percentage: 75,
+    description: "Mathematical modeling and implementation of rule-based classification, clustering methodologies (KNN, Ward's Linkage), and dimensionality reduction via Principal Component Analysis (PCA)."
+  },
+  {
+    id: "c3",
+    title: "UI & Architecture",
+    label: "ARC",
+    percentage: 80,
+    description: "Designing high-performance user interfaces in React, coupled with robust application layer engineering, network socket optimization, and hybrid cloud integration."
+  }
+];
+
 // Wait for DOM and Third-party libraries to load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initThreeBG();
-  initAnimations();
-  initCapabilities();
   initPreloader();
   initFullscreen();
   initCustomScrollNav();
+  
+  // Load content dynamically, then bind UI events and animations
+  await loadAndRenderContent();
+  
+  initAnimations();
+  initCapabilities();
+  initCMS();
 });
 
 /**
@@ -469,4 +526,429 @@ function updateActiveSectionLabel(name) {
     labelText.innerText = name;
     labelText.classList.remove('changing');
   }, 200);
+}
+
+/**
+ * Dynamic content loader & compiler
+ */
+async function loadAndRenderContent() {
+  // Check admin state from local/session storage
+  isAdminMode = sessionStorage.getItem('portfolio_admin_active') === 'true' || localStorage.getItem('portfolio_admin_active') === 'true';
+  if (isAdminMode) {
+    document.body.classList.add('admin-active');
+  }
+
+  // Initialize Supabase if config url is present
+  const dbUrl = localStorage.getItem('supabase_url') || SUPABASE_CONFIG.url;
+  const dbKey = sessionStorage.getItem('supabase_service_role_key') || localStorage.getItem('supabase_anon_key') || SUPABASE_CONFIG.anonKey;
+
+  if (dbUrl && dbKey && typeof supabase !== 'undefined') {
+    try {
+      supabaseClient = supabase.createClient(dbUrl, dbKey);
+      
+      // Fetch Projects
+      const { data: projData, error: projErr } = await supabaseClient.from('projects').select('*').order('created_at', { ascending: true });
+      if (!projErr && projData) {
+        projectsData = projData;
+      } else {
+        console.warn("Supabase projects load error, using fallback:", projErr);
+        projectsData = fallbackProjects;
+      }
+
+      // Fetch Capabilities
+      const { data: capData, error: capErr } = await supabaseClient.from('capabilities').select('*').order('created_at', { ascending: true });
+      if (!capErr && capData) {
+        capabilitiesData = capData;
+      } else {
+        console.warn("Supabase capabilities load error, using fallback:", capErr);
+        capabilitiesData = fallbackCapabilities;
+      }
+    } catch (err) {
+      console.warn("Database initialization failed, using fallback values:", err);
+      projectsData = fallbackProjects;
+      capabilitiesData = fallbackCapabilities;
+    }
+  } else {
+    // Default to fallback
+    projectsData = fallbackProjects;
+    capabilitiesData = fallbackCapabilities;
+  }
+
+  renderCapabilities();
+  renderProjects();
+}
+
+/**
+ * Render Capability dials dynamically
+ */
+function renderCapabilities() {
+  const container = document.getElementById('capabilities-grid');
+  if (!container) return;
+
+  container.innerHTML = capabilitiesData.map(cap => {
+    const angle = (cap.percentage / 100) * 360;
+    const label = cap.label || cap.title.substring(0, 3).toUpperCase();
+    return `
+      <div class="capability-card" id="cap-${cap.id}">
+        <!-- Admin Controls overlay -->
+        <div class="admin-controls">
+          <button class="admin-edit-btn edit-cap-trigger" data-id="${cap.id}" aria-label="Edit Capability">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="dial-container">
+          <button class="neomorphic-dial" aria-label="Toggle ${cap.title} details" aria-expanded="false">
+            <div class="dial-inner">
+              <div class="dial-indicator" style="transform: translate(-50%, -100%) rotate(${angle}deg);"></div>
+              <span class="dial-label">${label}</span>
+            </div>
+          </button>
+          <h3 class="capability-label">${cap.title}</h3>
+          <div class="status-dot ${cap.percentage >= 80 ? 'active' : ''}"></div>
+        </div>
+        
+        <div class="capability-content-wrapper">
+          <div class="capability-content">
+            <p>${cap.description} <strong>(Engineered Capability Level: ${cap.percentage}%)</strong></p>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/**
+ * Render projects dynamically
+ */
+function renderProjects() {
+  const container = document.getElementById('projects-grid');
+  if (!container) return;
+
+  let html = projectsData.map((proj, idx) => {
+    // Alternate large-card class for asymmetric neomorphic layout
+    const isLarge = idx % 2 === 0;
+    const tagArray = typeof proj.tags === 'string' ? proj.tags.split(',') : (Array.isArray(proj.tags) ? proj.tags : []);
+    const tagsHTML = tagArray.map(tag => `<span class="tag">${tag.trim()}</span>`).join('');
+    
+    return `
+      <div class="project-card ${isLarge ? 'large-card animate-on-scroll' : 'animate-on-scroll'}">
+        <!-- Admin Controls overlay -->
+        <div class="admin-controls">
+          <button class="admin-edit-btn edit-project-trigger" data-id="${proj.id}" aria-label="Edit Project">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="project-badge">${proj.category || 'Technical System'}</div>
+        <h3 class="project-title">${proj.title}</h3>
+        <p class="project-description">${proj.description}</p>
+        
+        <div class="project-tags">
+          ${tagsHTML}
+        </div>
+        
+        ${proj.link ? `
+          <div class="project-link-wrapper" style="margin-top: 25px; text-align: left;">
+            <a href="${proj.link}" target="_blank" rel="noopener noreferrer" class="neomorphic-btn" style="padding: 10px 20px; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+              <span>View System</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+
+  // Add the "Add Project" button at the end
+  html += `
+    <div class="add-project-card" id="add-project-trigger">
+      <span>+ Add New Project</span>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+/**
+ * Admin Credentials Portal & Logout Orchestrator
+ */
+function initCMS() {
+  const adminBtn = document.getElementById('admin-trigger-btn');
+  const adminModal = document.getElementById('admin-modal');
+  const adminClose = document.getElementById('admin-modal-close');
+  const dropZone = document.getElementById('admin-drop-zone');
+  const fileInput = document.getElementById('admin-file-input');
+  const logoutBtn = document.getElementById('admin-logout-btn');
+  const statusText = document.getElementById('admin-status-text');
+
+  if (!adminBtn || !adminModal) return;
+
+  // Open modal
+  adminBtn.addEventListener('click', () => {
+    adminModal.classList.add('open');
+    updateAdminStatusUI();
+  });
+
+  // Close modal
+  const closeModal = () => adminModal.classList.remove('open');
+  adminClose.addEventListener('click', closeModal);
+  adminModal.addEventListener('click', (e) => {
+    if (e.target === adminModal) closeModal();
+  });
+
+  // Update Status UI
+  function updateAdminStatusUI() {
+    if (isAdminMode) {
+      adminModal.classList.add('authorized');
+      statusText.innerText = "Admin Mode (Read/Write)";
+      logoutBtn.style.display = "block";
+      dropZone.style.display = "none";
+    } else {
+      adminModal.classList.remove('authorized');
+      statusText.innerText = "Public Mode (Read Only)";
+      logoutBtn.style.display = "none";
+      dropZone.style.display = "flex";
+    }
+  }
+
+  // Logout
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('portfolio_admin_active');
+    sessionStorage.removeItem('portfolio_admin_active');
+    sessionStorage.removeItem('supabase_service_role_key');
+    alert("Admin Mode deactivated.");
+    location.reload();
+  });
+
+  // Drag & drop handlers
+  dropZone.addEventListener('click', () => fileInput.click());
+  
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    handleCredentialsFile(file);
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    handleCredentialsFile(file);
+  });
+
+  function handleCredentialsFile(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const creds = JSON.parse(event.target.result);
+        if (creds && creds.admin_token === "vib-admin-mode-7a8d29b") {
+          // Store credentials securely
+          localStorage.setItem('portfolio_admin_active', 'true');
+          localStorage.setItem('supabase_url', creds.supabase_url);
+          localStorage.setItem('supabase_anon_key', creds.supabase_anon_key);
+          sessionStorage.setItem('supabase_service_role_key', creds.supabase_service_role_key);
+          sessionStorage.setItem('portfolio_admin_active', 'true');
+          
+          alert("Admin Mode Activated! Reloading page...");
+          location.reload();
+        } else {
+          alert("Invalid admin credentials token!");
+        }
+      } catch (err) {
+        alert("Error reading credentials JSON file!");
+        console.error(err);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // Hook Editors
+  initProjectEditor();
+  initCapabilityEditor();
+}
+
+/**
+ * Project Content Manager Form
+ */
+function initProjectEditor() {
+  const modal = document.getElementById('editor-modal');
+  const closeBtn = document.getElementById('editor-modal-close');
+  const form = document.getElementById('editor-form');
+  const deleteBtn = document.getElementById('edit-project-delete');
+  const editorTitle = document.getElementById('editor-title');
+
+  if (!modal || !form) return;
+
+  // Open modal for Adding a new project
+  document.addEventListener('click', (e) => {
+    const addTrigger = e.target.closest('#add-project-trigger');
+    if (addTrigger) {
+      editorTitle.innerText = "Add Project";
+      form.reset();
+      document.getElementById('edit-project-id').value = "";
+      deleteBtn.style.display = "none";
+      modal.classList.add('open');
+    }
+  });
+
+  // Open modal for Editing an existing project
+  document.addEventListener('click', (e) => {
+    const editTrigger = e.target.closest('.edit-project-trigger');
+    if (editTrigger) {
+      const projId = editTrigger.getAttribute('data-id');
+      const proj = projectsData.find(p => p.id == projId);
+      if (proj) {
+        editorTitle.innerText = "Edit Project";
+        document.getElementById('edit-project-id').value = proj.id;
+        document.getElementById('edit-project-title').value = proj.title;
+        document.getElementById('edit-project-desc').value = proj.description;
+        document.getElementById('edit-project-tags').value = Array.isArray(proj.tags) ? proj.tags.join(', ') : proj.tags;
+        document.getElementById('edit-project-image').value = proj.category || "";
+        document.getElementById('edit-project-link').value = proj.link || "";
+        
+        deleteBtn.style.display = "block";
+        modal.classList.add('open');
+      }
+    }
+  });
+
+  // Close modals
+  const closeModal = () => modal.classList.remove('open');
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Form Submit (Save / Insert)
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!supabaseClient) {
+      alert("Error: Supabase database is not initialized. Setup your credentials file first.");
+      return;
+    }
+
+    const id = document.getElementById('edit-project-id').value;
+    const title = document.getElementById('edit-project-title').value;
+    const description = document.getElementById('edit-project-desc').value;
+    const tagsRaw = document.getElementById('edit-project-tags').value;
+    const category = document.getElementById('edit-project-image').value;
+    const link = document.getElementById('edit-project-link').value;
+
+    const projectPayload = {
+      title,
+      description,
+      tags: tagsRaw,
+      category,
+      link
+    };
+
+    try {
+      if (id) {
+        // UPDATE existing project
+        const { error } = await supabaseClient.from('projects').update(projectPayload).eq('id', id);
+        if (error) throw error;
+        alert("Project updated successfully!");
+      } else {
+        // INSERT new project
+        const { error } = await supabaseClient.from('projects').insert([projectPayload]);
+        if (error) throw error;
+        alert("Project added successfully!");
+      }
+      location.reload();
+    } catch (err) {
+      alert("Error saving project: " + err.message);
+    }
+  });
+
+  // Delete Project
+  deleteBtn.addEventListener('click', async () => {
+    const id = document.getElementById('edit-project-id').value;
+    if (!id) return;
+    if (confirm("Are you sure you want to delete this project?")) {
+      try {
+        const { error } = await supabaseClient.from('projects').delete().eq('id', id);
+        if (error) throw error;
+        alert("Project deleted successfully!");
+        location.reload();
+      } catch (err) {
+        alert("Error deleting project: " + err.message);
+      }
+    }
+  });
+}
+
+/**
+ * Capability dial percentage & text editor
+ */
+function initCapabilityEditor() {
+  const modal = document.getElementById('capability-editor-modal');
+  const closeBtn = document.getElementById('cap-editor-modal-close');
+  const form = document.getElementById('cap-editor-form');
+
+  if (!modal || !form) return;
+
+  // Open modal for Editing capability
+  document.addEventListener('click', (e) => {
+    const editTrigger = e.target.closest('.edit-cap-trigger');
+    if (editTrigger) {
+      const capId = editTrigger.getAttribute('data-id');
+      const cap = capabilitiesData.find(c => c.id == capId);
+      if (cap) {
+        document.getElementById('edit-cap-id').value = cap.id;
+        document.getElementById('edit-cap-title').value = cap.title;
+        document.getElementById('edit-cap-percent').value = cap.percentage;
+        document.getElementById('edit-cap-desc').value = cap.description;
+        modal.classList.add('open');
+      }
+    }
+  });
+
+  // Close modals
+  const closeModal = () => modal.classList.remove('open');
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Form Submit (Save / Update)
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!supabaseClient) {
+      alert("Error: Supabase database is not initialized.");
+      return;
+    }
+
+    const id = document.getElementById('edit-cap-id').value;
+    const percentage = parseInt(document.getElementById('edit-cap-percent').value);
+    const description = document.getElementById('edit-cap-desc').value;
+
+    try {
+      const { error } = await supabaseClient.from('capabilities').update({
+        percentage,
+        description
+      }).eq('id', id);
+      
+      if (error) throw error;
+      alert("Capability updated successfully!");
+      location.reload();
+    } catch (err) {
+      alert("Error saving capability: " + err.message);
+    }
+  });
 }

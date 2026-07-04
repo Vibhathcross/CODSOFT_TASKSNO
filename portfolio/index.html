@@ -81,68 +81,8 @@
         </div>
         
         <!-- Capabilities Grid -->
-        <div class="capabilities-grid">
-          
-          <!-- Skill Dial 1: Systems Programming -->
-          <div class="capability-card" id="cap-systems">
-            <div class="dial-container">
-              <button class="neomorphic-dial" aria-label="Toggle Systems Programming details" aria-expanded="false">
-                <div class="dial-inner">
-                  <div class="dial-indicator"></div>
-                  <span class="dial-label">SYS</span>
-                </div>
-              </button>
-              <h3 class="capability-label">Systems Programming</h3>
-              <div class="status-dot"></div>
-            </div>
-            
-            <div class="capability-content-wrapper">
-              <div class="capability-content">
-                <p>Proficient in C and Linux system calls. Focused on low-level OS architecture, process control (<code>fork</code>/<code>exec</code>), and deterministic memory management algorithms.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Skill Dial 2: Data Science & ML -->
-          <div class="capability-card" id="cap-datascience">
-            <div class="dial-container">
-              <button class="neomorphic-dial" aria-label="Toggle Data Science & ML details" aria-expanded="false">
-                <div class="dial-inner">
-                  <div class="dial-indicator"></div>
-                  <span class="dial-label">DS</span>
-                </div>
-              </button>
-              <h3 class="capability-label">Data Science & ML</h3>
-              <div class="status-dot"></div>
-            </div>
-            
-            <div class="capability-content-wrapper">
-              <div class="capability-content">
-                <p>Mathematical modeling and implementation of rule-based classification, clustering methodologies (KNN, Ward's Linkage), and dimensionality reduction via Principal Component Analysis (PCA).</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Skill Dial 3: UI & Architecture -->
-          <div class="capability-card" id="cap-ui">
-            <div class="dial-container">
-              <button class="neomorphic-dial" aria-label="Toggle UI & Architecture details" aria-expanded="false">
-                <div class="dial-inner">
-                  <div class="dial-indicator"></div>
-                  <span class="dial-label">ARC</span>
-                </div>
-              </button>
-              <h3 class="capability-label">UI & Architecture</h3>
-              <div class="status-dot"></div>
-            </div>
-            
-            <div class="capability-content-wrapper">
-              <div class="capability-content">
-                <p>Designing high-performance user interfaces in React, coupled with robust application layer engineering, network socket optimization, and hybrid cloud integration.</p>
-              </div>
-            </div>
-          </div>
-
+        <div class="capabilities-grid" id="capabilities-grid">
+          <!-- Dynamic rendering from Supabase/local fallback -->
         </div>
       </div>
     </section>
@@ -156,33 +96,8 @@
         </div>
 
         <!-- Projects Asymmetric Grid -->
-        <div class="projects-grid">
-          
-          <!-- Project 1: Jasmin -->
-          <div class="project-card large-card animate-on-scroll">
-            <div class="project-badge">Featured System</div>
-            <h3 class="project-title">Jasmin: The Intelligent Assistant Framework</h3>
-            <p class="project-description">A custom, long-term AI assistant project featuring a dedicated React user interface, local offline wake-word recognition engines, and asynchronous Telegram bot integration operating on a secure local/cloud hybrid strategy.</p>
-            <div class="project-tags">
-              <span class="tag">React</span>
-              <span class="tag">AI/Voice</span>
-              <span class="tag">Hybrid Architecture</span>
-              <span class="tag">Node.js</span>
-            </div>
-          </div>
-
-          <!-- Project 2: Secure Access Gateway -->
-          <div class="project-card animate-on-scroll">
-            <div class="project-badge">Security Simulation</div>
-            <h3 class="project-title">Secure Access Gateway</h3>
-            <p class="project-description">An interactive, browser-based web application utilizing the Web Audio API and hardware-accelerated CSS keyframe animations to create a highly responsive, engineered security simulation interface.</p>
-            <div class="project-tags">
-              <span class="tag">Web Audio API</span>
-              <span class="tag">CSS3 Matrix</span>
-              <span class="tag">Interactive UI</span>
-            </div>
-          </div>
-
+        <div class="projects-grid" id="projects-grid">
+          <!-- Dynamic rendering from Supabase/local fallback -->
         </div>
       </div>
     </section>
@@ -228,6 +143,14 @@
             </div>
           </div>
         </div>
+        
+        <!-- Admin Settings Toggle -->
+        <button id="admin-trigger-btn" class="admin-trigger-btn" aria-label="Admin Access">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="admin-lock-icon">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </button>
       </div>
     </footer>
 
@@ -259,10 +182,109 @@
 
   </main>
 
-  <!-- External Script CDNs (Three.js and GSAP + ScrollTrigger) -->
+  <!-- Admin Authorization Modal -->
+  <div id="admin-modal" class="admin-modal-overlay">
+    <div class="admin-modal-card">
+      <button class="admin-modal-close" id="admin-modal-close">&times;</button>
+      <h3 class="admin-modal-title">Admin Access Portal</h3>
+      <p class="admin-modal-desc">Drag & drop your <code>admin_credentials.json</code> file here, or click to upload and enter Admin Mode.</p>
+      
+      <div id="admin-drop-zone" class="admin-drop-zone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <p class="drop-zone-text">Drop file here or click to browse</p>
+        <input type="file" id="admin-file-input" accept=".json" style="display: none;" />
+      </div>
+      
+      <div id="admin-status-box" class="admin-status-box">
+        <span class="status-indicator"></span>
+        <span class="status-text" id="admin-status-text">Public Mode (Read Only)</span>
+        <button id="admin-logout-btn" class="admin-logout-btn" style="display: none;">Exit Admin Mode</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Editor Modal -->
+  <div id="editor-modal" class="admin-modal-overlay">
+    <div class="admin-modal-card editor-card">
+      <button class="admin-modal-close" id="editor-modal-close">&times;</button>
+      <h3 class="admin-modal-title" id="editor-title">Edit Project</h3>
+      
+      <form id="editor-form" class="editor-form">
+        <input type="hidden" id="edit-project-id" />
+        
+        <div class="form-group">
+          <label for="edit-project-title">Title</label>
+          <input type="text" id="edit-project-title" required placeholder="Project Title" class="neomorphic-input" />
+        </div>
+        
+        <div class="form-group">
+          <label for="edit-project-desc">Description</label>
+          <textarea id="edit-project-desc" required placeholder="Project Description" rows="4" class="neomorphic-input"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="edit-project-tags">Tags (Comma-separated)</label>
+          <input type="text" id="edit-project-tags" required placeholder="Python, TensorFlow, Arduino" class="neomorphic-input" />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-project-image">Category / Thumbnail Label</label>
+          <input type="text" id="edit-project-image" placeholder="SYSTEM ARCHITECTURE" class="neomorphic-input" />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-project-link">GitHub or Project Link</label>
+          <input type="url" id="edit-project-link" placeholder="https://github.com/..." class="neomorphic-input" />
+        </div>
+        
+        <div class="editor-actions">
+          <button type="button" id="edit-project-delete" class="neomorphic-btn delete-btn">Delete Project</button>
+          <button type="submit" class="neomorphic-btn primary-btn">Save Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Capability Editor Modal -->
+  <div id="capability-editor-modal" class="admin-modal-overlay">
+    <div class="admin-modal-card editor-card">
+      <button class="admin-modal-close" id="cap-editor-modal-close">&times;</button>
+      <h3 class="admin-modal-title">Edit Capability</h3>
+      
+      <form id="cap-editor-form" class="editor-form">
+        <input type="hidden" id="edit-cap-id" />
+        
+        <div class="form-group">
+          <label for="edit-cap-title">Title</label>
+          <input type="text" id="edit-cap-title" readonly class="neomorphic-input readonly" />
+        </div>
+        
+        <div class="form-group">
+          <label for="edit-cap-percent">Dial Value (%)</label>
+          <input type="number" id="edit-cap-percent" min="0" max="100" required class="neomorphic-input" />
+        </div>
+        
+        <div class="form-group">
+          <label for="edit-cap-desc">Description</label>
+          <textarea id="edit-cap-desc" required rows="3" class="neomorphic-input"></textarea>
+        </div>
+        
+        <div class="editor-actions">
+          <button type="submit" class="neomorphic-btn primary-btn">Save Capability</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- External Script CDNs (Three.js, GSAP + ScrollTrigger, Supabase) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <!-- Core Script -->
   <script type="module" src="/main.js"></script>
