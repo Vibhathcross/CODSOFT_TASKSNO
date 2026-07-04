@@ -1415,30 +1415,37 @@ body.admin-active .add-project-card {
 /* Preloader Admin Access Button */
 .preloader-admin-btn {
   position: absolute;
-  top: 30px;
-  right: 30px;
-  padding: 10px 22px;
-  border-radius: 12px;
+  top: 28px;
+  right: 28px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: none;
   background-color: #FFFFFF;
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05), -4px -4px 10px rgba(255, 255, 255, 0.8);
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text-color);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.08), -4px -4px 10px rgba(255, 255, 255, 0.9);
+  color: var(--text-muted);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   z-index: 10010;
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   will-change: transform, box-shadow;
 }
 
+.preloader-admin-btn svg {
+  width: 18px;
+  height: 18px;
+  transition: stroke 0.3s;
+}
+
 .preloader-admin-btn:hover {
   color: var(--accent-red);
   transform: translate3d(0, -2px, 0);
-  box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.08), -6px -6px 15px rgba(255, 255, 255, 0.9);
+  box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.1), -6px -6px 16px rgba(255, 255, 255, 1);
 }
 
 .preloader-admin-btn:active {
   transform: translate3d(0, 0, 0);
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.06), inset -2px -2px 5px rgba(255, 255, 255, 0.85);
 }
