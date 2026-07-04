@@ -956,31 +956,113 @@ section {
   }
 }
 
-/* Custom Reddish Neon Shining Side Scrollbar */
+/* Hide default scrollbar completely */
 ::-webkit-scrollbar {
-  width: 12px;
+  display: none;
+  width: 0;
+  height: 0;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-color);
-  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--accent-red), #FF1744);
-  border-radius: 6px;
-  border: 3px solid var(--bg-color);
-  box-shadow: 0 0 10px rgba(211, 47, 47, 0.6);
-  transition: background 0.3s;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #FF1744, #FF5252);
-  box-shadow: 0 0 15px rgba(255, 23, 68, 0.8);
-}
-
-/* Firefox compatibility */
 html {
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent-red) var(--bg-color);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Custom Scroll Progress Navigator */
+.custom-scroll-nav {
+  position: fixed;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 280px;
+  width: 40px;
+}
+
+/* Vertical Track */
+.scroll-track {
+  position: relative;
+  width: 4px;
+  height: 100%;
+  background: var(--bg-color);
+  box-shadow: inset 1px 1px 3px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light);
+  border-radius: 2px;
+}
+
+/* Animating Active Progress Bead */
+.scroll-bead {
+  position: absolute;
+  left: 50%;
+  top: 0%;
+  transform: translate3d(-50%, -50%, 0);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF1744, #D32F2F);
+  box-shadow: 0 0 8px rgba(211, 47, 47, 0.7), 0 0 16px rgba(211, 47, 47, 0.4);
+  border: 2px solid #ffffff;
+  z-index: 5;
+  pointer-events: none;
+  will-change: top;
+  transition: top 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Static Section Markers */
+.scroll-marker {
+  position: absolute;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--bg-color);
+  box-shadow: var(--neo-btn-raised);
+  border: 1.5px solid var(--shadow-dark);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 2;
+  padding: 0;
+}
+
+.scroll-marker:hover, .scroll-marker.active {
+  border-color: var(--accent-red);
+  transform: translate3d(-50%, -50%, 0) scale(1.35);
+  box-shadow: inset 1px 1px 2px var(--shadow-dark), inset -1px -1px 2px var(--shadow-light);
+}
+
+/* Popup Text Labels */
+.marker-label {
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translate3d(10px, -50%, 0);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 8px;
+  box-shadow: var(--neo-btn-raised);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  white-space: nowrap;
+}
+
+.scroll-marker:hover .marker-label {
+  opacity: 1;
+  transform: translate3d(0, -50%, 0);
+}
+
+/* Hide on mobile devices so it doesn't clutter the layout */
+@media (max-width: 768px) {
+  .custom-scroll-nav {
+    display: none;
+  }
 }

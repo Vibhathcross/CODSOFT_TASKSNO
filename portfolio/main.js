@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCapabilities();
   initPreloader();
   initFullscreen();
+  initCustomScrollNav();
 });
 
 /**
@@ -237,6 +238,7 @@ function initAnimations() {
   // 2. Active State Page Scroll Tracker for Nav Buttons
   const sections = ['hero', 'capabilities', 'projects', 'motivation'];
   const navBtns = document.querySelectorAll('.nav-btn');
+  const scrollMarkers = document.querySelectorAll('.scroll-marker');
 
   sections.forEach(secId => {
     ScrollTrigger.create({
@@ -245,11 +247,21 @@ function initAnimations() {
       end: "bottom 50%",
       onToggle: self => {
         if (self.isActive) {
+          // Update header buttons
           navBtns.forEach(btn => {
             if (btn.getAttribute('href') === `#${secId}`) {
               btn.classList.add('active');
             } else {
               btn.classList.remove('active');
+            }
+          });
+
+          // Update custom side scroll markers
+          scrollMarkers.forEach(marker => {
+            if (marker.getAttribute('data-section') === secId) {
+              marker.classList.add('active');
+            } else {
+              marker.classList.remove('active');
             }
           });
         }
@@ -364,4 +376,39 @@ function initFullscreen() {
   document.addEventListener('fullscreenchange', updateFullscreenIcons);
   document.addEventListener('webkitfullscreenchange', updateFullscreenIcons);
   document.addEventListener('msfullscreenchange', updateFullscreenIcons);
+}
+
+/**
+ * Custom Scroll Progress Navigator Controller
+ */
+function initCustomScrollNav() {
+  const scrollBead = document.getElementById('scroll-bead');
+  const markers = document.querySelectorAll('.scroll-marker');
+  if (!scrollBead || !markers.length) return;
+
+  // Update active bead offset position relative to scroll height percentage
+  function updateScrollProgress() {
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (scrollHeight <= 0) return;
+    const percent = (window.scrollY / scrollHeight) * 100;
+    
+    // Boundary clamp between 0 and 100
+    const clampedPercent = Math.max(0, Math.min(100, percent));
+    scrollBead.style.top = `${clampedPercent}%`;
+  }
+
+  // Smooth scroll to targeted section on click
+  markers.forEach(marker => {
+    marker.addEventListener('click', (e) => {
+      e.preventDefault();
+      const sectionId = marker.getAttribute('data-section');
+      const sectionElement = document.getElementById(sectionId);
+      if (sectionElement) {
+        sectionElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  window.addEventListener('scroll', updateScrollProgress, { passive: true });
+  updateScrollProgress(); // Run once initially to align on load
 }
