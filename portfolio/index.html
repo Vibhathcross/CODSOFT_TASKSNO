@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibhath T K | Systems & Data Systems Engineer Portfolio</title>
+  <meta name="description" content="Engineering student portfolio bridging low-level systems architecture with intelligent, data-driven applications. Built with neomorphic UI and 3D WebGL.">
+  
+  <!-- Google Fonts - Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- Preloader Intro -->
+  <div id="preloader">
+    <div class="preloader-shine"></div>
+    <h1 class="preloader-text">The Portfolio</h1>
+  </div>
+
+  <!-- WebGL Background Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Editorial Header / Navigation -->
+  <header class="site-header">
+    <nav class="nav-links">
+      <a href="#hero" class="nav-btn active">Home</a>
+      <a href="#capabilities" class="nav-btn">Capabilities</a>
+      <a href="#projects" class="nav-btn">Projects</a>
+      <a href="#motivation" class="nav-btn">Connect</a>
+    </nav>
+  </header>
+
+  <!-- Main Scroll Container -->
+  <main class="scroll-container">
+
+    <!-- Section 1: Hero Canvas -->
+    <section id="hero" class="hero-section">
+      <div class="hero-card animate-on-scroll">
+        <h1 class="hero-title">Vibhath T K</h1>
+        <p class="hero-subtitle">Engineering student bridging low-level systems architecture with intelligent, data-driven applications.</p>
+        <div class="hero-cta-wrapper">
+          <a href="#capabilities" class="neomorphic-btn primary-btn">
+            Explore Capabilities
+          </a>
+        </div>
+      </div>
+      <div class="scroll-down-indicator">
+        <span class="mouse-icon">
+          <span class="wheel"></span>
+        </span>
+        <span class="arrow-down"></span>
+      </div>
+    </section>
+
+    <!-- Section 2: Core Capabilities -->
+    <section id="capabilities" class="capabilities-section animate-on-scroll">
+      <div class="section-container">
+        <div class="section-header-wrapper">
+          <span class="section-tag">01 / CAPABILITIES</span>
+          <h2 class="section-title">Core Capabilities</h2>
+        </div>
+        
+        <!-- Capabilities Grid -->
+        <div class="capabilities-grid">
+          
+          <!-- Skill Dial 1: Systems Programming -->
+          <div class="capability-card" id="cap-systems">
+            <div class="dial-container">
+              <button class="neomorphic-dial" aria-label="Toggle Systems Programming details" aria-expanded="false">
+                <div class="dial-inner">
+                  <div class="dial-indicator"></div>
+                  <span class="dial-label">SYS</span>
+                </div>
+              </button>
+              <h3 class="capability-label">Systems Programming</h3>
+              <div class="status-dot"></div>
+            </div>
+            
+            <div class="capability-content-wrapper">
+              <div class="capability-content">
+                <p>Proficient in C and Linux system calls. Focused on low-level OS architecture, process control (<code>fork</code>/<code>exec</code>), and deterministic memory management algorithms.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skill Dial 2: Data Science & ML -->
+          <div class="capability-card" id="cap-datascience">
+            <div class="dial-container">
+              <button class="neomorphic-dial" aria-label="Toggle Data Science & ML details" aria-expanded="false">
+                <div class="dial-inner">
+                  <div class="dial-indicator"></div>
+                  <span class="dial-label">DS</span>
+                </div>
+              </button>
+              <h3 class="capability-label">Data Science & ML</h3>
+              <div class="status-dot"></div>
+            </div>
+            
+            <div class="capability-content-wrapper">
+              <div class="capability-content">
+                <p>Mathematical modeling and implementation of rule-based classification, clustering methodologies (KNN, Ward's Linkage), and dimensionality reduction via Principal Component Analysis (PCA).</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skill Dial 3: UI & Architecture -->
+          <div class="capability-card" id="cap-ui">
+            <div class="dial-container">
+              <button class="neomorphic-dial" aria-label="Toggle UI & Architecture details" aria-expanded="false">
+                <div class="dial-inner">
+                  <div class="dial-indicator"></div>
+                  <span class="dial-label">ARC</span>
+                </div>
+              </button>
+              <h3 class="capability-label">UI & Architecture</h3>
+              <div class="status-dot"></div>
+            </div>
+            
+            <div class="capability-content-wrapper">
+              <div class="capability-content">
+                <p>Designing high-performance user interfaces in React, coupled with robust application layer engineering, network socket optimization, and hybrid cloud integration.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Technical Projects -->
+    <section id="projects" class="projects-section animate-on-scroll">
+      <div class="section-container">
+        <div class="section-header-wrapper">
+          <span class="section-tag">02 / WORK</span>
+          <h2 class="section-title">Technical Projects</h2>
+        </div>
+
+        <!-- Projects Asymmetric Grid -->
+        <div class="projects-grid">
+          
+          <!-- Project 1: Jasmin -->
+          <div class="project-card large-card animate-on-scroll">
+            <div class="project-badge">Featured System</div>
+            <h3 class="project-title">Jasmin: The Intelligent Assistant Framework</h3>
+            <p class="project-description">A custom, long-term AI assistant project featuring a dedicated React user interface, local offline wake-word recognition engines, and asynchronous Telegram bot integration operating on a secure local/cloud hybrid strategy.</p>
+            <div class="project-tags">
+              <span class="tag">React</span>
+              <span class="tag">AI/Voice</span>
+              <span class="tag">Hybrid Architecture</span>
+              <span class="tag">Node.js</span>
+            </div>
+          </div>
+
+          <!-- Project 2: Secure Access Gateway -->
+          <div class="project-card animate-on-scroll">
+            <div class="project-badge">Security Simulation</div>
+            <h3 class="project-title">Secure Access Gateway</h3>
+            <p class="project-description">An interactive, browser-based web application utilizing the Web Audio API and hardware-accelerated CSS keyframe animations to create a highly responsive, engineered security simulation interface.</p>
+            <div class="project-tags">
+              <span class="tag">Web Audio API</span>
+              <span class="tag">CSS3 Matrix</span>
+              <span class="tag">Interactive UI</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Motivation to Connect -->
+    <section id="motivation" class="motivation-section animate-on-scroll">
+      <div class="section-container">
+        <div class="section-header-wrapper">
+          <span class="section-tag">03 / COLLABORATION</span>
+          <h2 class="section-title">Motivation to Connect</h2>
+        </div>
+
+        <div class="motivation-card animate-on-scroll">
+          <p class="motivation-lead">
+            I am driven by projects that push technical boundaries—where low-level systems efficiency meets high-level data intelligence. Here is why we should connect:
+          </p>
+          
+          <div class="motivation-grid">
+            <div class="motivation-item">
+              <div class="motivation-icon">⚙️</div>
+              <h3 class="motivation-item-title">System Optimization</h3>
+              <p class="motivation-item-text">If you are working on resource-constrained architectures, kernel-level optimizations, or custom protocol design, let's exchange insights on building deterministic systems.</p>
+            </div>
+            
+            <div class="motivation-item">
+              <div class="motivation-icon">🧠</div>
+              <h3 class="motivation-item-title">Intelligent Integration</h3>
+              <p class="motivation-item-text">For applications bridging offline ML models, local voice automation systems, or hybrid edge-cloud infrastructure that respects privacy and speed.</p>
+            </div>
+            
+            <div class="motivation-item">
+              <div class="motivation-icon">🧪</div>
+              <h3 class="motivation-item-title">Academic & Applied Research</h3>
+              <p class="motivation-item-text">If you need rigorous mathematical modeling, dimensionality reduction analysis (PCA), or custom classification methodologies applied to physical datasets.</p>
+            </div>
+          </div>
+
+          <div class="motivation-footer">
+            <p>Let's collaborate on engineering problems that matter. Reach out for technical discussions, research projects, or architecture design reviews.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-content">
+        <!-- Social Media Connect Hover Button -->
+        <div class="footer-connect-wrapper">
+          <div class="social-connect-btn">
+            <span>Connect</span>
+            <div class="icons-container">
+              <a href="https://www.linkedin.com/in/vibhath-t-k-360b2525a/" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
+                <svg height="28" width="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon" fill="currentColor">
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+              </a>
+              <a href="https://github.com/Vibhathcross" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
+                <svg height="28" width="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" class="icon" fill="currentColor">
+                  <path d="M950.930286 512q0 143.433143-83.748571 257.974857t-216.283429 158.573714q-15.433143 2.852571-22.601143-4.022857t-7.168-17.115429l0-120.539429q0-55.442286-29.696-81.115429 32.548571-3.437714 58.587429-10.313143t53.686857-22.308571 46.299429-38.034286 30.281143-59.977143 11.702857-86.016q0-69.12-45.129143-117.686857 21.138286-52.004571-4.534857-116.589714-16.018286-5.12-46.299429 6.290286t-52.589714 25.161143l-21.723429 13.677714q-53.174857-14.848-109.714286-14.848t-109.714286 14.848q-9.142857-6.290286-24.283429-15.433143t-47.689143-22.016-49.152-7.68q-25.161143 64.585143-4.022857 116.589714-45.129143 48.566857-45.129143 117.686857 0 48.566857 11.702857 85.723429t29.988571 59.977143 46.006857 38.253714 53.686857 22.308571 58.587429 10.313143q-22.820571 20.553143-28.013714 58.88-11.995429 5.705143-25.746286 8.557714t-32.548571 2.852571-37.449143-12.288-31.744-35.693714q-10.825143-18.285714-27.721143-29.696t-28.306286-13.677714l-11.410286-1.682286q-11.995429 0-16.603429 2.56t-2.852571 6.582857 5.12 7.972571 7.460571 6.875429l4.022857 2.852571q12.580571 5.705143 24.868571 21.723429t17.993143 29.110857l5.705143 13.165714q7.460571 21.723429 25.161143 35.108571t38.253714 17.115429 39.716571 4.022857 31.744-1.974857l13.165714-2.267429q0 21.723429 0.292571 50.834286t0.292571 30.866286q0 10.313143-7.460571 17.115429t-22.820571 4.022857q-132.534857-44.032-216.283429-158.573714t-83.748571-257.974857q0-119.442286 58.88-220.306286t159.744-159.744 220.306286-58.88 220.306286 58.88 159.744 159.744 58.88 220.306286z"/>
+                </svg>
+              </a>
+              <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="WhatsApp">
+                <svg height="28" width="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon" fill="currentColor">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.73 2.012 14.254.99 11.63.99c-5.437 0-9.862 4.371-9.866 9.8.002 2.073.548 4.097 1.59 5.887L2.33 20.63l4.317-1.476zM17.06 14.41c-.274-.137-1.62-.799-1.87-.891-.25-.092-.433-.137-.614.137-.18.274-.7.891-.858 1.074-.158.18-.317.202-.591.065-2.73-1.36-4.47-2.812-5.46-4.502-.262-.449.262-.418.75-1.39.083-.165.042-.31-.02-.447-.063-.137-.614-1.48-.84-2.029-.22-.53-.443-.458-.614-.467-.16-.008-.344-.01-.529-.01-.184 0-.485.07-.74.356-.254.286-.97 1.074-.97 2.62s1.127 3.042 1.28 3.248c.153.206 2.22 3.39 5.378 4.754.75.326 1.337.52 1.797.666.757.24 1.446.207 1.99.126.607-.09 1.62-.663 1.85-1.3.23-.637.23-1.183.162-1.3-.068-.117-.25-.184-.525-.32z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- External Script CDNs (Three.js and GSAP + ScrollTrigger) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <!-- Core Script -->
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

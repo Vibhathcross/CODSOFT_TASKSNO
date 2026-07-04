@@ -1,0 +1,27 @@
+
+> vibhath-portfolio@0.1.0 dev
+> vite --port 3050 --host
+
+
+  [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m359[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3050[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://10.69.154.17:[1m3050[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m10:33:38 PM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m10:34:15 PM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m10:34:35 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/style.css?direct[22m
+[2m9:16:25 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/style.css?direct[22m
+[2m9:16:35 AM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mmain.js[22m
+[2m9:26:00 AM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m9:26:00 AM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m9:26:14 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/style.css?direct[22m
+[2m9:28:36 AM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m10:17:28 AM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m10:17:33 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/style.css?direct[22m
+[2m10:18:54 AM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m10:18:59 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/style.css?direct[22m
+[2m10:19:06 AM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mmain.js[22m
+[2m10:21:20 AM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m11:31:41 AM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2m404.html[22m
+[2m11:44:48 AM[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mindex.html[22m
