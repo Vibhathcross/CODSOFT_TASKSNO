@@ -79,32 +79,28 @@ function initThreeBG() {
   const rainGeometry = new THREE.BufferGeometry();
   rainGeometry.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
 
-  // Create vertical neon dash texture programmatically
+  // Create circular neon drop texture programmatically
   const canvasTextureElement = document.createElement('canvas');
-  canvasTextureElement.width = 16;
-  canvasTextureElement.height = 64;
+  canvasTextureElement.width = 32;
+  canvasTextureElement.height = 32;
   const textureCtx = canvasTextureElement.getContext('2d');
 
-  // Reddish outer neon glow
-  const glowGradient = textureCtx.createLinearGradient(8, 0, 8, 64);
-  glowGradient.addColorStop(0, 'rgba(255, 0, 51, 0)');
-  glowGradient.addColorStop(0.3, 'rgba(255, 0, 51, 0.35)');
-  glowGradient.addColorStop(1, 'rgba(255, 0, 51, 0.85)');
-  textureCtx.fillStyle = glowGradient;
-  textureCtx.fillRect(4, 0, 8, 64);
+  // Radial gradient: white hot center, transitioning to neon red, transitioning to transparent edge
+  const dropGradient = textureCtx.createRadialGradient(16, 16, 1, 16, 16, 15);
+  dropGradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');     // Pure white hot core
+  dropGradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
+  dropGradient.addColorStop(0.4, 'rgba(255, 0, 51, 0.85)');     // Glowing neon red boundary
+  dropGradient.addColorStop(1, 'rgba(255, 0, 51, 0)');          // Fading edge
 
-  // Hot white core
-  const coreGradient = textureCtx.createLinearGradient(8, 0, 8, 64);
-  coreGradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
-  coreGradient.addColorStop(0.4, 'rgba(255, 255, 255, 0.45)');
-  coreGradient.addColorStop(1, 'rgba(255, 255, 255, 1)');
-  textureCtx.fillStyle = coreGradient;
-  textureCtx.fillRect(7, 0, 2, 64);
+  textureCtx.fillStyle = dropGradient;
+  textureCtx.beginPath();
+  textureCtx.arc(16, 16, 16, 0, Math.PI * 2);
+  textureCtx.fill();
 
   const rainTexture = new THREE.CanvasTexture(canvasTextureElement);
 
   const rainMaterial = new THREE.PointsMaterial({
-    size: 0.35,
+    size: 0.22,
     map: rainTexture,
     transparent: true,
     opacity: 0.8,
