@@ -235,48 +235,6 @@ function initAnimations() {
     );
   });
 
-  // 2. Active State Page Scroll Tracker for Nav Buttons
-  const sections = ['hero', 'capabilities', 'projects', 'motivation'];
-  const navBtns = document.querySelectorAll('.nav-btn');
-  const scrollMarkers = document.querySelectorAll('.scroll-marker');
-  const sectionNames = {
-    'hero': 'Home',
-    'capabilities': 'Capabilities',
-    'projects': 'Projects',
-    'motivation': 'Connect'
-  };
-
-  sections.forEach(secId => {
-    ScrollTrigger.create({
-      trigger: `#${secId}`,
-      start: "top 50%",
-      end: "bottom 50%",
-      onToggle: self => {
-        if (self.isActive) {
-          // Update header buttons
-          navBtns.forEach(btn => {
-            if (btn.getAttribute('href') === `#${secId}`) {
-              btn.classList.add('active');
-            } else {
-              btn.classList.remove('active');
-            }
-          });
-
-          // Update custom side scroll markers
-          scrollMarkers.forEach(marker => {
-            if (marker.getAttribute('data-section') === secId) {
-              marker.classList.add('active');
-            } else {
-              marker.classList.remove('active');
-            }
-          });
-
-          // Update permanent active section box text
-          updateActiveSectionLabel(sectionNames[secId]);
-        }
-      }
-    });
-  });
 }
 
 /**
@@ -390,6 +348,9 @@ function initFullscreen() {
 /**
  * Custom Scroll Progress Navigator Controller
  */
+/**
+ * Custom Scroll Progress Navigator Controller
+ */
 function initCustomScrollNav() {
   const scrollBead = document.getElementById('scroll-bead');
   const markers = document.querySelectorAll('.scroll-marker');
@@ -427,6 +388,9 @@ function initCustomScrollNav() {
         marker.classList.remove('reached');
       }
     });
+
+    // Sync all header highlights, marker highlights, and display labels
+    updateActiveSectionState();
   }
 
   // Smooth scroll to targeted section on click
@@ -443,6 +407,67 @@ function initCustomScrollNav() {
 
   window.addEventListener('scroll', updateScrollProgress, { passive: true });
   updateScrollProgress(); // Run once initially to align on load
+}
+
+/**
+ * Unified calculation of the current active section occupying the screen
+ * Updates nav buttons, scroll markers, and active labels in sync
+ */
+function updateActiveSectionState() {
+  const sections = ['hero', 'capabilities', 'projects', 'motivation'];
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const scrollMarkers = document.querySelectorAll('.scroll-marker');
+  const sectionNames = {
+    'hero': 'Home',
+    'capabilities': 'Capabilities',
+    'projects': 'Projects',
+    'motivation': 'Connect'
+  };
+  
+  let activeSec = 'hero';
+  const scrollY = window.scrollY;
+  const viewportCenter = scrollY + window.innerHeight / 2;
+
+  // Find section occupying viewport center
+  sections.forEach(secId => {
+    const el = document.getElementById(secId);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      const elementTop = rect.top + scrollY;
+      const elementBottom = elementTop + rect.height;
+      if (viewportCenter >= elementTop && viewportCenter <= elementBottom) {
+        activeSec = secId;
+      }
+    }
+  });
+
+  // Edge cases: top and bottom limits
+  if (scrollY < 50) {
+    activeSec = 'hero';
+  } else if (scrollY + window.innerHeight >= document.documentElement.scrollHeight - 50) {
+    activeSec = 'motivation';
+  }
+
+  // Update header buttons
+  navBtns.forEach(btn => {
+    if (btn.getAttribute('href') === `#${activeSec}`) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  // Update custom scroll markers
+  scrollMarkers.forEach(marker => {
+    if (marker.getAttribute('data-section') === activeSec) {
+      marker.classList.add('active');
+    } else {
+      marker.classList.remove('active');
+    }
+  });
+
+  // Update permanent active section box text
+  updateActiveSectionLabel(sectionNames[activeSec]);
 }
 
 /**
