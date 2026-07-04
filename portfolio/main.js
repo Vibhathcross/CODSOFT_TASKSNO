@@ -196,14 +196,24 @@ function initThreeBG() {
 
   // Animation Loop / Passive Rotation
   const clock = new THREE.Clock();
-  
+  let targetScrollY = 0;
+  let currentScrollY = 0;
+
+  window.addEventListener('scroll', () => {
+    targetScrollY = window.scrollY;
+  }, { passive: true });
+
   function animate() {
     requestAnimationFrame(animate);
     
-    // Smooth constant ambient rotation
+    // Lerp scroll value for smooth damped response
+    currentScrollY += (targetScrollY - currentScrollY) * 0.06;
+
+    // Smooth constant ambient rotation + scroll-driven boost
     const elapsedTime = clock.getElapsedTime();
-    icosahedron.rotation.y = elapsedTime * 0.04;
-    icosahedron.rotation.x = elapsedTime * 0.02;
+    icosahedron.rotation.y = elapsedTime * 0.04 + currentScrollY * 0.0028;
+    icosahedron.rotation.x = elapsedTime * 0.02 + currentScrollY * 0.0014;
+    icosahedron.rotation.z = currentScrollY * 0.0008;
 
     // Update Neon Rain Positions
     const positions = rainGeometry.attributes.position.array;
