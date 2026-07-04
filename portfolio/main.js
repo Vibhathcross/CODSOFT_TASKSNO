@@ -64,6 +64,44 @@ function initThreeBG() {
   // Position adjustment
   icosahedron.position.set(0, 0, 0);
 
+  // --- Neon Rain Setup ---
+  const rainCount = 100;
+  const rainPositions = new Float32Array(rainCount * 6); // 2 vertices per line (x1,y1,z1, x2,y2,z2)
+  const rainSpeeds = [];
+  const rainLengths = [];
+
+  for (let i = 0; i < rainCount; i++) {
+    const x = (Math.random() - 0.5) * 15;
+    const y = Math.random() * 20 - 10;
+    const z = (Math.random() - 0.5) * 8;
+    const len = 0.15 + Math.random() * 0.25;
+    const speed = 0.08 + Math.random() * 0.12;
+    
+    rainSpeeds.push(speed);
+    rainLengths.push(len);
+
+    // Vertex 1 (Top of dash)
+    rainPositions[i * 6] = x;
+    rainPositions[i * 6 + 1] = y;
+    rainPositions[i * 6 + 2] = z;
+    // Vertex 2 (Bottom of dash)
+    rainPositions[i * 6 + 3] = x;
+    rainPositions[i * 6 + 4] = y - len;
+    rainPositions[i * 6 + 5] = z;
+  }
+
+  const rainGeometry = new THREE.BufferGeometry();
+  rainGeometry.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
+
+  const rainMaterial = new THREE.LineBasicMaterial({
+    color: 0xD32F2F,
+    transparent: true,
+    opacity: 0.25
+  });
+
+  const rain = new THREE.LineSegments(rainGeometry, rainMaterial);
+  scene.add(rain);
+
   // Animation Loop / Passive Rotation
   const clock = new THREE.Clock();
   
@@ -74,6 +112,33 @@ function initThreeBG() {
     const elapsedTime = clock.getElapsedTime();
     icosahedron.rotation.y = elapsedTime * 0.04;
     icosahedron.rotation.x = elapsedTime * 0.02;
+
+    // Update Neon Rain Positions
+    const positions = rainGeometry.attributes.position.array;
+    for (let i = 0; i < rainCount; i++) {
+      let y1 = positions[i * 6 + 1];
+      let y2 = positions[i * 6 + 4];
+      
+      y1 -= rainSpeeds[i];
+      y2 -= rainSpeeds[i];
+      
+      // If raindrop falls below viewport bounds, reset to top
+      if (y1 < -10) {
+        const x = (Math.random() - 0.5) * 15;
+        y1 = 10;
+        y2 = 10 - rainLengths[i];
+        const z = (Math.random() - 0.5) * 8;
+        
+        positions[i * 6] = x;
+        positions[i * 6 + 2] = z;
+        positions[i * 6 + 3] = x;
+        positions[i * 6 + 5] = z;
+      }
+      
+      positions[i * 6 + 1] = y1;
+      positions[i * 6 + 4] = y2;
+    }
+    rainGeometry.attributes.position.needsUpdate = true;
     
     renderer.render(scene, camera);
   }
