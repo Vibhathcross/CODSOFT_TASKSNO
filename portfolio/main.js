@@ -106,6 +106,8 @@ function initPreloader() {
 
 /**
  * 3D WebGL Background Engine (Three.js)
+ * — Passive icosahedron with scroll rotation
+ * — Explodes into triangle grid when Connect section is reached
  */
 function initThreeBG() {
   const canvas = document.getElementById('webgl-canvas');
@@ -119,154 +121,274 @@ function initThreeBG() {
   camera.position.z = 4.5;
 
   // Renderer setup with alpha transparency and antialiasing
-  const renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    alpha: true,
-    antialias: true
-  });
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  // Geometry - low-poly 3D Icosahedron wireframe
-  const radius = window.innerWidth < 768 ? 1.6 : 2.5; // Responsive scaling on init
-  const geometry = new THREE.IcosahedronGeometry(radius, 1); // 1 detail level for perfect low-poly wireframe
-
-  // Wireframe material - opacity of 0.15 for ambient overlay
-  const material = new THREE.MeshBasicMaterial({
+  // ── Icosahedron (main mesh) ──────────────────────────────────────────
+  const radius = window.innerWidth < 768 ? 1.6 : 2.5;
+  const icoGeo = new THREE.IcosahedronGeometry(radius, 1);
+  const icoMat = new THREE.MeshBasicMaterial({
     color: 0xD32F2F,
     wireframe: true,
     transparent: true,
     opacity: 0.15
   });
-
-  // Create Mesh
-  const icosahedron = new THREE.Mesh(geometry, material);
+  const icosahedron = new THREE.Mesh(icoGeo, icoMat);
   scene.add(icosahedron);
 
-  // Position adjustment
-  icosahedron.position.set(0, 0, 0);
+  // ── Build individual triangle fragments from icosahedron faces ───────
+  // We use a non-indexed copy so every 3 vertices = 1 triangle face
+  const indexedGeo = new THREE.IcosahedronGeometry(radius, 1);
+  const nonIndexed = indexedGeo.toNonIndexed();
+  const posAttr = nonIndexed.attributes.position;
+  const faceCount = posAttr.count / 3;           // 80 triangles for detail=1
 
-  // --- Neon Rain Setup ---
+  const triMat = new THREE.MeshBasicMaterial({
+    color: 0xD32F2F,
+    wireframe: true,
+    transparent: true,
+    opacity: 0
+  });
+
+  // Store each triangle as a separate Mesh with its own geometry
+  const triMeshes = [];
+  const triOrigins = [];    // centroid in icosahedron space
+  const triTargets = [];    // flat grid target positions
+
+  // Compute grid layout — roughly square arrangement
+  const cols = Math.ceil(Math.sqrt(faceCount));
+  const spacing = radius * 0.55;
+  const gridW = (cols - 1) * spacing;
+
+  for (let f = 0; f < faceCount; f++) {
+    const i = f * 3;
+
+    // Extract the 3 vertices of this face
+    const ax = posAttr.getX(i),   ay = posAttr.getY(i),   az = posAttr.getZ(i);
+    const bx = posAttr.getX(i+1), by = posAttr.getY(i+1), bz = posAttr.getZ(i+1);
+    const cx = posAttr.getX(i+2), cy = posAttr.getY(i+2), cz = posAttr.getZ(i+2);
+
+    // Centroid (used for explode direction)
+    const centroid = new THREE.Vector3(
+      (ax + bx + cx) / 3,
+      (ay + by + cy) / 3,
+      (az + bz + cz) / 3
+    );
+    triOrigins.push(centroid.clone());
+
+    // Build a small geometry centred at the centroid
+    const tGeo = new THREE.BufferGeometry();
+    tGeo.setAttribute('position', new THREE.BufferAttribute(
+      new Float32Array([
+        ax - centroid.x, ay - centroid.y, az - centroid.z,
+        bx - centroid.x, by - centroid.y, bz - centroid.z,
+        cx - centroid.x, cy - centroid.y, cz - centroid.z,
+      ]), 3
+    ));
+
+    const tMesh = new THREE.Mesh(tGeo, triMat.clone());
+    // Start at centroid position (matches the icosahedron surface)
+    tMesh.position.copy(centroid);
+    tMesh.visible = false;
+    scene.add(tMesh);
+    triMeshes.push(tMesh);
+
+    // Flat grid target position
+    const col = f % cols;
+    const row = Math.floor(f / cols);
+    const rows = Math.ceil(faceCount / cols);
+    triTargets.push(new THREE.Vector3(
+      col * spacing - gridW / 2,
+      row * spacing - (rows - 1) * spacing / 2,
+      0
+    ));
+  }
+  indexedGeo.dispose();
+  nonIndexed.dispose();
+
+  // ── Neon Rain Setup ──────────────────────────────────────────────────
   const rainCount = 120;
-  const rainPositions = new Float32Array(rainCount * 3); // 1 vertex per point (x,y,z)
+  const rainPositions = new Float32Array(rainCount * 3);
   const rainSpeeds = [];
-
   for (let i = 0; i < rainCount; i++) {
-    rainPositions[i * 3] = (Math.random() - 0.5) * 15;
+    rainPositions[i * 3]     = (Math.random() - 0.5) * 15;
     rainPositions[i * 3 + 1] = Math.random() * 20 - 10;
     rainPositions[i * 3 + 2] = Math.random() * 4 - 2;
     rainSpeeds.push(0.02 + Math.random() * 0.04);
   }
-
   const rainGeometry = new THREE.BufferGeometry();
   rainGeometry.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
 
-  // Create circular neon drop texture programmatically
   const canvasTextureElement = document.createElement('canvas');
   canvasTextureElement.width = 32;
   canvasTextureElement.height = 32;
   const textureCtx = canvasTextureElement.getContext('2d');
-
-  // Radial gradient: white hot center, transitioning to neon red, transitioning to transparent edge
   const dropGradient = textureCtx.createRadialGradient(16, 16, 1, 16, 16, 15);
-  dropGradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');     // Pure white hot core
+  dropGradient.addColorStop(0,   'rgba(255, 255, 255, 1.0)');
   dropGradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
-  dropGradient.addColorStop(0.4, 'rgba(255, 0, 51, 0.85)');     // Glowing neon red boundary
-  dropGradient.addColorStop(1, 'rgba(255, 0, 51, 0)');          // Fading edge
-
+  dropGradient.addColorStop(0.4, 'rgba(255, 0, 51, 0.85)');
+  dropGradient.addColorStop(1,   'rgba(255, 0, 51, 0)');
   textureCtx.fillStyle = dropGradient;
   textureCtx.beginPath();
   textureCtx.arc(16, 16, 16, 0, Math.PI * 2);
   textureCtx.fill();
-
   const rainTexture = new THREE.CanvasTexture(canvasTextureElement);
-
   const rainMaterial = new THREE.PointsMaterial({
-    size: 0.22,
-    map: rainTexture,
-    transparent: true,
-    opacity: 0.8,
-    depthWrite: false,
-    blending: THREE.NormalBlending
+    size: 0.22, map: rainTexture,
+    transparent: true, opacity: 0.8,
+    depthWrite: false, blending: THREE.NormalBlending
   });
-
   const rain = new THREE.Points(rainGeometry, rainMaterial);
   rain.frustumCulled = false;
   scene.add(rain);
 
-  // Animation Loop / Passive Rotation
+  // ── Animation state ───────────────────────────────────────────────────
   const clock = new THREE.Clock();
-  let targetScrollY = 0;
+  let targetScrollY  = 0;
   let currentScrollY = 0;
 
-  window.addEventListener('scroll', () => {
-    targetScrollY = window.scrollY;
-  }, { passive: true });
+  // Explode animation state — 0 = icosahedron, 1 = grid
+  let explodeProgress  = 0;
+  let explodeTarget    = 0;
 
+  window.addEventListener('scroll', () => { targetScrollY = window.scrollY; }, { passive: true });
+
+  // Detect Connect section entry via IntersectionObserver
+  const connectSection = document.getElementById('motivation');
+  if (connectSection) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        explodeTarget = entry.isIntersecting ? 1 : 0;
+      });
+    }, { threshold: 0.25 });
+    obs.observe(connectSection);
+  }
+
+  // ── Animation loop ────────────────────────────────────────────────────
   function animate() {
     requestAnimationFrame(animate);
-    
-    // Lerp scroll value for smooth damped response
+
+    const elapsedTime = clock.getElapsedTime();
+
+    // Lerp scroll
     currentScrollY += (targetScrollY - currentScrollY) * 0.06;
 
-    // Smooth constant ambient rotation + scroll-driven boost
-    const elapsedTime = clock.getElapsedTime();
-    icosahedron.rotation.y = elapsedTime * 0.04 + currentScrollY * 0.0028;
-    icosahedron.rotation.x = elapsedTime * 0.02 + currentScrollY * 0.0014;
-    icosahedron.rotation.z = currentScrollY * 0.0008;
+    // Lerp explode progress (smooth in/out)
+    explodeProgress += (explodeTarget - explodeProgress) * 0.028;
+    const t = explodeProgress;            // 0→1 as user enters Connect
+    const tEase = t < 0.5               // smooth-step easing
+      ? 2 * t * t
+      : -1 + (4 - 2 * t) * t;
 
-    // Update Neon Rain Positions
+    if (t < 0.02) {
+      // ─ Pure icosahedron state ─
+      icosahedron.visible = true;
+      icosahedron.material.opacity = 0.15;
+      icosahedron.rotation.y = elapsedTime * 0.04 + currentScrollY * 0.0028;
+      icosahedron.rotation.x = elapsedTime * 0.02 + currentScrollY * 0.0014;
+      icosahedron.rotation.z = currentScrollY * 0.0008;
+
+      triMeshes.forEach(m => { m.visible = false; });
+
+    } else {
+      // ─ Transition / grid state ─
+
+      // Fade out main icosahedron as fragments take over
+      icosahedron.visible = true;
+      icosahedron.material.opacity = 0.15 * (1 - Math.min(t * 3, 1));
+      icosahedron.rotation.y = elapsedTime * 0.04 + currentScrollY * 0.0028;
+      icosahedron.rotation.x = elapsedTime * 0.02 + currentScrollY * 0.0014;
+      icosahedron.rotation.z = currentScrollY * 0.0008;
+
+      // For each triangle mesh: lerp from icosahedron surface → explode burst → grid
+      triMeshes.forEach((mesh, i) => {
+        mesh.visible = true;
+        mesh.material.opacity = Math.min(t * 2, 0.55);
+
+        const origin = triOrigins[i];
+        const target = triTargets[i];
+
+        // Explode direction = centroid normalised * burst radius
+        const burstScale = radius * 2.2;
+        const burstX = origin.x / (origin.length() || 1) * burstScale;
+        const burstY = origin.y / (origin.length() || 1) * burstScale;
+        const burstZ = origin.z / (origin.length() || 1) * burstScale;
+
+        // Two-phase lerp:
+        //   t 0→0.5  : icosahedron surface → exploded burst
+        //   t 0.5→1  : exploded burst → flat grid
+        let px, py, pz;
+        if (tEase < 0.5) {
+          const s = tEase / 0.5;
+          px = origin.x + (burstX - origin.x) * s;
+          py = origin.y + (burstY - origin.y) * s;
+          pz = origin.z + (burstZ - origin.z) * s;
+        } else {
+          const s = (tEase - 0.5) / 0.5;
+          px = burstX + (target.x - burstX) * s;
+          py = burstY + (target.y - burstY) * s;
+          pz = burstZ + (target.z - burstZ) * s;
+        }
+
+        mesh.position.set(px, py, pz);
+
+        // Spin each fragment during the explode burst, settle at grid
+        const spinDecay = Math.max(0, 1 - tEase * 1.6);
+        mesh.rotation.x = elapsedTime * (1.2 + i * 0.07) * spinDecay;
+        mesh.rotation.y = elapsedTime * (0.9 + i * 0.05) * spinDecay;
+        mesh.rotation.z = elapsedTime * (0.6 + i * 0.03) * spinDecay;
+      });
+
+      if (t > 0.98) {
+        icosahedron.visible = false;
+      }
+    }
+
+    // ─ Neon Rain ─
     const positions = rainGeometry.attributes.position.array;
     for (let i = 0; i < rainCount; i++) {
       let y = positions[i * 3 + 1];
       y -= rainSpeeds[i];
-      
-      // Reset if below viewport bounds
       if (y < -10) {
         positions[i * 3] = (Math.random() - 0.5) * 15;
         y = 10;
         positions[i * 3 + 2] = Math.random() * 4 - 2;
       }
-      
       positions[i * 3 + 1] = y;
     }
     rainGeometry.attributes.position.needsUpdate = true;
-    
+
     renderer.render(scene, camera);
   }
-  
+
   animate();
 
-  // Responsive Window Resize Listener
+  // ── Resize ────────────────────────────────────────────────────────────
   window.addEventListener('resize', () => {
-    // Camera Aspect Ratio Update
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-
-    // Renderer Resize
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Dynamic Geometry Rescale on Resize
     const newRadius = window.innerWidth < 768 ? 1.6 : 2.5;
     icosahedron.geometry.dispose();
     icosahedron.geometry = new THREE.IcosahedronGeometry(newRadius, 1);
   });
 
-  // Bind WebGL Mesh Rotation to Window Scroll (Scroll Scrubbing) via GSAP
+  // ── GSAP Scroll-scrub rotation ────────────────────────────────────────
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
-
     gsap.to(icosahedron.rotation, {
       x: Math.PI * 2,
       y: Math.PI * 3,
       z: Math.PI,
-      ease: "none",
+      ease: 'none',
       scrollTrigger: {
-        trigger: "body",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.8 // smooth scroll-bound scrubbing
+        trigger: 'body',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.8
       }
     });
   }
