@@ -360,6 +360,9 @@ section {
 }
 
 .hero-profile-frame {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   width: auto;
   height: 380px;
   display: flex;
@@ -373,7 +376,8 @@ section {
   height: 100%;
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(4px 8px 16px rgba(0, 0, 0, 0.12));
+  background: transparent !important;
+  filter: drop-shadow(2px 6px 18px rgba(0, 0, 0, 0.15));
   transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
