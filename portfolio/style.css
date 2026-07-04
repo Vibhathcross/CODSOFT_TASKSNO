@@ -366,11 +366,16 @@ section {
 
 .hero-cta-wrapper {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+  gap: 18px;
 }
 
 .neomorphic-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   text-decoration: none;
   font-family: var(--font-display);
   font-weight: 700;
@@ -398,6 +403,39 @@ section {
 
 .neomorphic-btn.primary-btn {
   color: var(--accent-red);
+}
+
+/* Resume Download Button */
+.resume-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.resume-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(211, 47, 47, 0.06), rgba(255, 23, 68, 0.04));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.resume-btn:hover::before {
+  opacity: 1;
+}
+
+.resume-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--accent-red);
+  animation: bounce-download 2s ease-in-out infinite;
+}
+
+@keyframes bounce-download {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(3px); }
 }
 
 /* Scroll Down Indicator */
