@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Core Stylesheet -->
-  <script type="module" crossorigin src="./assets/main-CFcIw5IK.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/main-DEvVHfTv.css">
+  <script type="module" crossorigin src="./assets/main-FBCJsaBf.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/main-B7bhgUPO.css">
 </head>
 <body>
 
@@ -29,6 +29,9 @@
 
   <!-- Preloader Intro -->
   <div id="preloader">
+    <button id="preloader-admin-btn" class="preloader-admin-btn" aria-label="Admin Access">
+      <span>Admin</span>
+    </button>
     <div class="preloader-shine"></div>
     <div class="preloader-content">
       <h1 class="preloader-text">The Portfolio</h1>
@@ -254,14 +257,19 @@
   <div id="capability-editor-modal" class="admin-modal-overlay">
     <div class="admin-modal-card editor-card">
       <button class="admin-modal-close" id="cap-editor-modal-close">&times;</button>
-      <h3 class="admin-modal-title">Edit Capability</h3>
+      <h3 class="admin-modal-title" id="cap-editor-title">Edit Capability</h3>
       
       <form id="cap-editor-form" class="editor-form">
         <input type="hidden" id="edit-cap-id" />
         
         <div class="form-group">
           <label for="edit-cap-title">Title</label>
-          <input type="text" id="edit-cap-title" readonly class="neomorphic-input readonly" />
+          <input type="text" id="edit-cap-title" required placeholder="Systems Programming" class="neomorphic-input" />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-cap-label">Dial Label (Max 3 Characters)</label>
+          <input type="text" id="edit-cap-label" required maxlength="3" placeholder="SYS" class="neomorphic-input" />
         </div>
         
         <div class="form-group">
@@ -275,6 +283,7 @@
         </div>
         
         <div class="editor-actions">
+          <button type="button" id="edit-cap-delete" class="neomorphic-btn delete-btn">Delete Capability</button>
           <button type="submit" class="neomorphic-btn primary-btn">Save Capability</button>
         </div>
       </form>
