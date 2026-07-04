@@ -73,7 +73,7 @@ function initThreeBG() {
     rainPositions[i * 3] = (Math.random() - 0.5) * 15;
     rainPositions[i * 3 + 1] = Math.random() * 20 - 10;
     rainPositions[i * 3 + 2] = Math.random() * 4 - 2;
-    rainSpeeds.push(0.08 + Math.random() * 0.12);
+    rainSpeeds.push(0.02 + Math.random() * 0.04);
   }
 
   const rainGeometry = new THREE.BufferGeometry();
