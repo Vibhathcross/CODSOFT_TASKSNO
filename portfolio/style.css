@@ -41,9 +41,96 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   position: relative;
+  overflow: hidden; /* Lock scroll on load, unlocked by enter button */
 }
 
-/* Preloader Intro */
+/* Fullscreen Toggle Button */
+.fullscreen-toggle-btn {
+  position: fixed;
+  top: 25px;
+  left: 25px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  box-shadow: var(--neo-btn-raised);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, box-shadow, color;
+}
+
+.fullscreen-toggle-btn:hover {
+  color: var(--accent-red);
+  transform: translate3d(0, -2px, 0);
+  box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+}
+
+.fullscreen-toggle-btn:active {
+  transform: translate3d(0, 0, 0);
+  box-shadow: var(--neo-btn-inset);
+}
+
+.fs-icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s;
+}
+
+.fullscreen-toggle-btn:hover .fs-icon {
+  transform: scale(1.1);
+}
+
+/* Preloader Intro & Enter Button */
+.preloader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  z-index: 10;
+}
+
+.enter-portfolio-btn {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 18px 42px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background-color: #F0F0F3;
+  color: var(--accent-red);
+  box-shadow: 6px 6px 12px #D1D9E6, -6px -6px 12px #ffffff;
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  pointer-events: none;
+  will-change: transform, opacity, box-shadow;
+}
+
+.enter-portfolio-btn.show {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  pointer-events: auto;
+}
+
+.enter-portfolio-btn:hover {
+  transform: translate3d(0, -3px, 0);
+  box-shadow: 8px 8px 16px #c8d0e7, -8px -8px 16px #ffffff;
+  background-color: var(--accent-red);
+  color: #ffffff;
+}
+
+.enter-portfolio-btn:active {
+  transform: translate3d(0, 0, 0);
+  box-shadow: inset 4px 4px 8px #D1D9E6, inset -4px -4px 8px #ffffff;
+}
+
 #preloader {
   position: fixed;
   top: 0;

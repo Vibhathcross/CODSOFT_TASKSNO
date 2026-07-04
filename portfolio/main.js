@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAnimations();
   initCapabilities();
   initPreloader();
+  initFullscreen();
 });
 
 /**
@@ -11,15 +12,38 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function initPreloader() {
   const preloader = document.getElementById('preloader');
+  const enterBtn = document.getElementById('enter-btn');
   if (!preloader) return;
 
-  setTimeout(() => {
-    preloader.style.opacity = '0';
-    preloader.style.visibility = 'hidden';
+  // Reveal the Enter button after text animation completes (2.2s)
+  if (enterBtn) {
     setTimeout(() => {
-      preloader.style.display = 'none';
-    }, 800);
-  }, 2600);
+      enterBtn.classList.add('show');
+    }, 2200);
+
+    enterBtn.addEventListener('click', () => {
+      // Enter Fullscreen on user interaction
+      const docEl = document.documentElement;
+      if (docEl.requestFullscreen) {
+        docEl.requestFullscreen().catch(err => console.log('Fullscreen rejected:', err));
+      } else if (docEl.webkitRequestFullscreen) { /* Safari */
+        docEl.webkitRequestFullscreen();
+      } else if (docEl.msRequestFullscreen) { /* IE11 */
+        docEl.msRequestFullscreen();
+      }
+
+      // Smooth preloader exit transition
+      preloader.style.opacity = '0';
+      preloader.style.visibility = 'hidden';
+      
+      // Enable body scroll
+      document.body.style.overflow = '';
+
+      setTimeout(() => {
+        preloader.style.display = 'none';
+      }, 800);
+    });
+  }
 }
 
 /**
@@ -287,4 +311,57 @@ function initCapabilities() {
       });
     }
   });
+}
+
+/**
+ * Fullscreen Orchestrator & Toggler
+ */
+function initFullscreen() {
+  const toggleBtn = document.getElementById('fullscreen-toggle');
+  const iconExpand = document.getElementById('fs-icon-expand');
+  const iconCompress = document.getElementById('fs-icon-compress');
+  if (!toggleBtn || !iconExpand || !iconCompress) return;
+
+  // Toggle function
+  function toggleFullscreen() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+      // Enter fullscreen
+      const docEl = document.documentElement;
+      if (docEl.requestFullscreen) {
+        docEl.requestFullscreen().catch(err => console.log(err));
+      } else if (docEl.webkitRequestFullscreen) {
+        docEl.webkitRequestFullscreen();
+      } else if (docEl.msRequestFullscreen) {
+        docEl.msRequestFullscreen();
+      }
+    } else {
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(err => console.log(err));
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+  }
+
+  // Update icons based on state
+  function updateFullscreenIcons() {
+    const isFS = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+    if (isFS) {
+      iconExpand.style.display = 'none';
+      iconCompress.style.display = 'block';
+    } else {
+      iconExpand.style.display = 'block';
+      iconCompress.style.display = 'none';
+    }
+  }
+
+  // Event listeners
+  toggleBtn.addEventListener('click', toggleFullscreen);
+
+  document.addEventListener('fullscreenchange', updateFullscreenIcons);
+  document.addEventListener('webkitfullscreenchange', updateFullscreenIcons);
+  document.addEventListener('msfullscreenchange', updateFullscreenIcons);
 }
