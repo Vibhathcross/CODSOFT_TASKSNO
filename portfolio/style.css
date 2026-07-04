@@ -803,80 +803,36 @@ section {
 .motivation-section {
   display: flex;
   align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
-.motivation-card {
+.motivation-quote-container {
   width: 100%;
-  background-color: var(--bg-color);
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 60px 40px;
   border-radius: 30px;
+  background-color: var(--bg-color);
   box-shadow: var(--neo-raised-shadow);
-  padding: 50px;
   will-change: transform, opacity;
 }
 
-.motivation-lead {
-  font-size: 1.25rem;
-  line-height: 1.8;
-  color: var(--text-color);
-  margin-bottom: 40px;
-  text-align: center;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.motivation-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  margin-bottom: 40px;
-}
-
-.motivation-item {
-  background-color: var(--bg-color);
-  border-radius: 20px;
-  box-shadow: var(--neo-inset-shadow);
-  padding: 35px 25px;
-  text-align: center;
-  transition: var(--transition-smooth);
-  will-change: transform;
-}
-
-.motivation-item:hover {
-  transform: translate3d(0, -5px, 0);
-}
-
-.motivation-icon {
-  font-size: 2.2rem;
-  margin-bottom: 15px;
-  display: inline-block;
-}
-
-.motivation-item-title {
-  font-size: 1.2rem;
+.motivation-quote-text {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
   font-weight: 700;
-  color: var(--accent-red);
-  margin-bottom: 15px;
-}
-
-.motivation-item-text {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: var(--text-muted);
-}
-
-.motivation-footer {
-  text-align: center;
-  max-width: 700px;
-  margin: 0 auto;
-  padding-top: 30px;
-  border-top: 1px dashed var(--shadow-dark);
-}
-
-.motivation-footer p {
-  font-size: 1rem;
+  line-height: 1.45;
   color: var(--text-color);
-  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.highlight-accent {
+  background: linear-gradient(135deg, var(--accent-red), #FF1744);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline;
+  font-weight: 800;
 }
 
 /* Responsive Rules */
@@ -905,13 +861,13 @@ section {
     width: 100%;
   }
   
-  .motivation-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+  .motivation-quote-text {
+    font-size: 1.8rem;
+    line-height: 1.4;
   }
 
-  .motivation-card {
-    padding: 30px 20px;
+  .motivation-quote-container {
+    padding: 40px 20px;
   }
   
   .hero-title {
