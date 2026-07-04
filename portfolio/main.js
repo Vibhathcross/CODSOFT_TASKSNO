@@ -73,7 +73,7 @@ function initThreeBG() {
   for (let i = 0; i < rainCount; i++) {
     const x = (Math.random() - 0.5) * 15;
     const y = Math.random() * 20 - 10;
-    const z = (Math.random() - 0.5) * 8;
+    const z = Math.random() * 4 - 3;
     const len = 0.15 + Math.random() * 0.25;
     const speed = 0.08 + Math.random() * 0.12;
     
@@ -96,7 +96,7 @@ function initThreeBG() {
   const rainMaterial = new THREE.LineBasicMaterial({
     color: 0xD32F2F,
     transparent: true,
-    opacity: 0.25
+    opacity: 0.6
   });
 
   const rain = new THREE.LineSegments(rainGeometry, rainMaterial);
@@ -127,7 +127,7 @@ function initThreeBG() {
         const x = (Math.random() - 0.5) * 15;
         y1 = 10;
         y2 = 10 - rainLengths[i];
-        const z = (Math.random() - 0.5) * 8;
+        const z = Math.random() * 4 - 3;
         
         positions[i * 6] = x;
         positions[i * 6 + 2] = z;
