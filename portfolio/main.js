@@ -750,51 +750,98 @@ function renderProjects() {
   if (!container) return;
 
   let html = projectsData.map((proj, idx) => {
-    // Alternate large-card class for asymmetric neomorphic layout
-    const isLarge = idx % 2 === 0;
+    // Calculate card stack layout offsets
+    const topOffset = -40 + idx * 22;
+    const leftOffset = -40 + idx * 22;
+    const zIndex = idx + 1;
+    const rotateDeg = -8 + idx * 2.5;
+
+    // Parse comma-separated tags
     const tagArray = typeof proj.tags === 'string' ? proj.tags.split(',') : (Array.isArray(proj.tags) ? proj.tags : []);
     const tagsHTML = tagArray.map(tag => `<span class="tag">${tag.trim()}</span>`).join('');
     
     return `
-      <div class="project-card ${isLarge ? 'large-card animate-on-scroll' : 'animate-on-scroll'}">
-        <!-- Admin Controls overlay -->
-        <div class="admin-controls">
-          <button class="admin-edit-btn edit-project-trigger" data-id="${proj.id}" aria-label="Edit Project">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-          </button>
+      <div class="project-card" style="top: ${topOffset}px; left: ${leftOffset}px; z-index: ${zIndex}; transform: rotateZ(${rotateDeg}deg);" id="project-${proj.id}">
+        <!-- Left 3D details flap (cardDetails) -->
+        <div class="project-card-details">
+          <div class="project-details-header">
+            <!-- Admin Controls overlay -->
+            <div class="admin-controls" style="position: relative; top: 0; right: 0; display: inline-flex; margin-bottom: 10px; z-index: 20;">
+              <button class="admin-edit-btn edit-project-trigger" data-id="${proj.id}" aria-label="Edit Project">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+            </div>
+            <p class="project-details-desc">${proj.description}</p>
+            <div class="project-details-tags">
+              ${tagsHTML}
+            </div>
+          </div>
+
+          ${proj.link ? `
+            <a href="${proj.link}" target="_blank" rel="noopener noreferrer" class="project-details-button">
+              <span>View System</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px; height:12px;"><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+          ` : ''}
         </div>
 
+        <!-- Main card body content (always visible) -->
         <div class="project-badge">${proj.category || 'Technical System'}</div>
         <h3 class="project-title">${proj.title}</h3>
-        <p class="project-description">${proj.description}</p>
-        
-        <div class="project-tags">
-          ${tagsHTML}
+        <div class="project-card-hint">
+          <span>Hover to open</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px; height:12px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </div>
-        
-        ${proj.link ? `
-          <div class="project-link-wrapper" style="margin-top: 25px; text-align: left;">
-            <a href="${proj.link}" target="_blank" rel="noopener noreferrer" class="neomorphic-btn" style="padding: 10px 20px; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
-              <span>View System</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-            </a>
-          </div>
-        ` : ''}
       </div>
     `;
   }).join('');
 
-  // Add the "Add Project" button at the end
-  html += `
-    <div class="add-project-card" id="add-project-trigger">
-      <span>+ Add New Project</span>
-    </div>
-  `;
+  if (isAdminMode) {
+    const idx = projectsData.length;
+    const topOffset = -40 + idx * 22;
+    const leftOffset = -40 + idx * 22;
+    const zIndex = idx + 1;
+    const rotateDeg = -8 + idx * 2.5;
+    
+    html += `
+      <div class="project-card add-project-card-stack" id="add-project-trigger" style="top: ${topOffset}px; left: ${leftOffset}px; z-index: ${zIndex}; transform: rotateZ(${rotateDeg}deg);">
+        <span>+ Add Project</span>
+      </div>
+    `;
+  }
 
   container.innerHTML = html;
+
+  // Bind click/tap triggers for mobile card detail toggles
+  const cards = container.querySelectorAll('.project-card');
+  cards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Do not toggle active status if clicking details action links or admin edit controls
+      if (e.target.closest('.admin-edit-btn') || e.target.closest('#add-project-trigger') || e.target.closest('.project-details-button')) {
+        return;
+      }
+      
+      const isActive = card.classList.contains('active');
+      
+      // Remove active state from all other project cards
+      cards.forEach(c => c.classList.remove('active'));
+      
+      // Toggle this card
+      if (!isActive) {
+        card.classList.add('active');
+      }
+    });
+  });
+
+  // Close when clicking outside of any card
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.project-card')) {
+      cards.forEach(c => c.classList.remove('active'));
+    }
+  });
 }
 
 /**
