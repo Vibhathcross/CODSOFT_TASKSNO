@@ -868,3 +868,32 @@ section {
     text-align: center;
   }
 }
+
+/* Custom Reddish Neon Shining Side Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent-red), #FF1744);
+  border-radius: 6px;
+  border: 3px solid var(--bg-color);
+  box-shadow: 0 0 10px rgba(211, 47, 47, 0.6);
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #FF1744, #FF5252);
+  box-shadow: 0 0 15px rgba(255, 23, 68, 0.8);
+}
+
+/* Firefox compatibility */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-red) var(--bg-color);
+}
