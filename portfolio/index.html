@@ -62,7 +62,16 @@
     <!-- Section 1: Hero Canvas -->
     <section id="hero" class="hero-section">
       <div class="hero-card animate-on-scroll">
-        <span class="glass"></span>
+        <!-- Glowing SVG Border Beam -->
+        <svg class="hero-border-svg">
+          <defs>
+            <linearGradient id="red-glow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FF1744" />
+              <stop offset="100%" stop-color="#FF1744" />
+            </linearGradient>
+          </defs>
+          <rect class="hero-border-rect" rx="30" ry="30" />
+        </svg>
         <div class="hero-card-content">
           <!-- Floating Profile Silhouette -->
           <div class="hero-profile-container">

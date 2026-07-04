@@ -373,7 +373,7 @@ section {
   margin: 0 auto;
   border-radius: 30px;
   background-color: transparent;
-  border: 2px solid transparent; /* transparent track so rotating border is always visible */
+  border: 2px solid rgba(211, 47, 47, 0.15); /* static resting border path */
   box-shadow: var(--neo-raised-shadow);
   display: flex;
   justify-content: center;
@@ -390,35 +390,39 @@ section {
   box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.06), 0px 0px 3px 1px #00000015;
 }
 
-/* Glowing rotating red border gradient - always visible and circulating */
-.hero-card::before {
-  content: '';
+/* SVG Container overlays the card exactly */
+.hero-border-svg {
   position: absolute;
-  inset: 0;
-  border-radius: 30px;
-  padding: 3px; /* border thickness */
-  background: conic-gradient(
-    from 0deg, 
-    transparent 15%, 
-    var(--accent-red) 35%, 
-    #FF1744 50%, 
-    var(--accent-red) 65%, 
-    transparent 85%
-  );
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  z-index: 0;
-  opacity: 1; /* always visible */
-  animation: rotate-border 4s linear infinite; /* always circulating */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
+  z-index: 2;
+  filter: drop-shadow(0px 0px 6px rgba(255, 23, 68, 0.85));
 }
 
-@keyframes rotate-border {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* Glowing red beam circulating around the border path */
+.hero-border-rect {
+  fill: none;
+  stroke: url(#red-glow-grad);
+  stroke-width: 3.5px;
+  stroke-linecap: round;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  x: 2px;
+  y: 2px;
+  stroke-dasharray: 200 1200; /* 200px beam length, 1200px gap */
+  animation: border-beam 6s linear infinite;
+}
+
+@keyframes border-beam {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -1400; /* animates seamless loop by matching stroke-dasharray period (200 + 1200) */
+  }
 }
 
 /* Inner content area with transparent background */
