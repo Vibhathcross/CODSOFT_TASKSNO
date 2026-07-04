@@ -800,13 +800,6 @@ section {
 
 
 /* Page 4: Motivation to Connect */
-.motivation-section {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
 .motivation-quote-container {
   width: 100%;
   max-width: 950px;
