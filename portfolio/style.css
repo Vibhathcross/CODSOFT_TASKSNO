@@ -741,6 +741,24 @@ section {
   transform: perspective(2000px) rotateY(-90deg);
   z-index: 10;
   box-sizing: border-box;
+  
+  /* Scroll properties for overflow content */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.project-card-details::-webkit-scrollbar {
+  width: 4px;
+}
+
+.project-card-details::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.project-card-details::-webkit-scrollbar-thumb {
+  background-color: var(--accent-red);
+  border-radius: 2px;
 }
 
 .project-card:hover .project-card-details,
@@ -1601,10 +1619,43 @@ body.admin-active .add-project-card {
     transform: none !important;
     width: 100%;
     max-width: 320px;
-    height: 220px;
+    height: 95px; /* Collapsed height on mobile */
+    padding: 18px 22px;
   }
   
+  .project-card.active {
+    height: 380px; /* Expanded height on mobile */
+  }
+  
+  /* Hide hover hint on mobile */
+  .project-card-hint {
+    display: none !important;
+  }
+  
+  /* Adjust title margins for mobile collapsed state */
+  .project-title {
+    font-size: 1.15rem;
+    margin-bottom: 0;
+  }
+  
+  .project-badge {
+    margin-bottom: 6px;
+  }
+  
+  /* Left details flap covers full card width on mobile active */
   .project-card-details {
-    width: 100% !important; /* Full width details flap on mobile for perfect readability */
+    width: 100% !important;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.95) translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    border-right: none;
+    border-bottom: 2px solid var(--accent-red);
+  }
+  
+  .project-card.active .project-card-details {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateY(0);
   }
 }
