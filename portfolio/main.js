@@ -143,71 +143,64 @@ const fallbackCredentials = [
   }
 ];
 
-// Fetch resume asset from database as base64 and generate Object URL
+// Fetch resume from database and wire download button — works on mobile
 async function fetchResumeAsset() {
+  const downloadBtn = document.getElementById('resume-download-btn');
+
   if (!supabaseClient) {
-    // No DB: wire up local fallback with JS fetch-blob force download
-    wireLocalResumeDownload();
+    await wireLocalResumeDownload(downloadBtn);
     return;
   }
+
   try {
-    const { data, error } = await supabaseClient.from('assets').select('*').eq('name', 'resume').single();
-    if (data && !error) {
+    const { data, error } = await supabaseClient
+      .from('assets').select('*').eq('name', 'resume').single();
+
+    if (data && !error && data.file_data) {
+      // Decode base64 → Blob → object URL (all done at page load, not at click time)
       const binaryString = atob(data.file_data);
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
         bytes[i] = binaryString.charCodeAt(i);
       }
       const blob = new Blob([bytes], { type: data.file_type || 'application/pdf' });
       resumeBlobUrl = URL.createObjectURL(blob);
-      
-      const downloadBtn = document.getElementById('resume-download-btn');
+
+      // Set directly on the anchor — mobile tap becomes a native browser download
       if (downloadBtn) {
-        // Override click to force download from DB blob
-        downloadBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          const a = document.createElement('a');
-          a.href = resumeBlobUrl;
-          a.download = 'Vibhath_TK_Resume.pdf';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        });
+        downloadBtn.href = resumeBlobUrl;
+        downloadBtn.setAttribute('download', 'Vibhath_TK_Resume.pdf');
+        downloadBtn.removeAttribute('target');
       }
     } else {
-      // DB had no resume row - fallback to local file
-      wireLocalResumeDownload();
+      // No resume in DB yet — fall back to local file
+      await wireLocalResumeDownload(downloadBtn);
     }
   } catch (err) {
-    console.warn('Fallback to local resume PDF due to error:', err);
-    wireLocalResumeDownload();
+    console.warn('Resume DB fetch failed, using local fallback:', err);
+    await wireLocalResumeDownload(downloadBtn);
   }
 }
 
-// Force-download the local resume.pdf as a blob to bypass GitHub Pages MIME restrictions
-function wireLocalResumeDownload() {
-  const downloadBtn = document.getElementById('resume-download-btn');
+// Pre-fetch local resume.pdf as a blob at load time so mobile can download natively
+async function wireLocalResumeDownload(downloadBtn) {
+  if (!downloadBtn) downloadBtn = document.getElementById('resume-download-btn');
   if (!downloadBtn) return;
-  downloadBtn.addEventListener('click', async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('./resume.pdf');
-      if (!response.ok) throw new Error('File not found');
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = 'Vibhath_TK_Resume.pdf';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
-    } catch (err) {
-      // Last resort: open in new tab
-      window.open('./resume.pdf', '_blank');
-    }
-  });
+  try {
+    const response = await fetch('./resume.pdf');
+    if (!response.ok) throw new Error('Local PDF not found');
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    // Set directly on the anchor — no click interception needed
+    downloadBtn.href = blobUrl;
+    downloadBtn.setAttribute('download', 'Vibhath_TK_Resume.pdf');
+    downloadBtn.removeAttribute('target');
+  } catch (err) {
+    // Absolute last resort: open in new tab
+    downloadBtn.href = './resume.pdf';
+    downloadBtn.setAttribute('target', '_blank');
+    downloadBtn.removeAttribute('download');
+  }
 }
 
 // Wait for DOM and Third-party libraries to load
