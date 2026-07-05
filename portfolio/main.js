@@ -797,11 +797,21 @@ function renderProjects() {
     
     return `
       <div class="project-card" id="project-${proj.id}">
+        <!-- Admin Controls overlay (fixed on front, hides when opened) -->
+        <div class="admin-controls" style="position: absolute; top: 18px; right: 18px; display: inline-flex; z-index: 50;">
+          <button class="admin-edit-btn edit-project-trigger" data-id="${proj.id}" aria-label="Edit Project">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </button>
+        </div>
+
         <div class="layton-all">
-          <!-- Front of the Layton Card -->
+          <!-- Front of the Layton Card (Title instead of Hat) -->
           <div class="layton-front">
-            <div class="layton-icon">
-              <div class="layton-hat"></div>
+            <div class="layton-front-title">
+              <h3>${proj.title}</h3>
             </div>
             <div class="layton-text"><p>PROJECT</p></div>
             <div class="layton-text"><p>00${idx + 1}</p></div>
@@ -809,16 +819,6 @@ function renderProjects() {
           
           <!-- Back of the Layton Card -->
           <div class="layton-back">
-            <!-- Admin Controls overlay -->
-            <div class="admin-controls" style="position: absolute; top: 10px; right: 10px; display: inline-flex; z-index: 50;">
-              <button class="admin-edit-btn edit-project-trigger" data-id="${proj.id}" aria-label="Edit Project">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
-              </button>
-            </div>
-            
             <div class="layton-back-text-box">
               <h4>${proj.title}</h4>
               <p>${proj.description}</p>
@@ -843,10 +843,10 @@ function renderProjects() {
       <div class="project-card add-project-card-stack" id="add-project-trigger">
         <div class="layton-all">
           <div class="layton-front" style="border-style: dashed; border-color: var(--accent-red); background-color: rgba(211, 47, 47, 0.01); box-shadow: none;">
-            <div class="layton-icon" style="box-shadow: inset 0px -8px var(--accent-red);">
-              <div class="layton-hat" style="background-color: var(--accent-red); box-shadow: inset 0px -15px #FFC107;"></div>
+            <div class="layton-front-title">
+              <h3>+ ADD PROJECT</h3>
             </div>
-            <div class="layton-text"><p>ADD NEW</p></div>
+            <div class="layton-text"><p>NEW</p></div>
             <div class="layton-text"><p>PROJECT</p></div>
           </div>
         </div>
