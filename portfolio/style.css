@@ -751,16 +751,21 @@ section {
 }
 
 /* Page 3: Technical Projects (Professor Layton Red Theme) */
+/* Page 3: Technical Projects (Professor Layton Red Theme - Zig Zag Grid) */
 .projects-grid {
-  position: relative;
-  width: 270px;
-  height: 380px;
-  margin: 100px auto 120px auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 70px 40px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 100px auto 140px auto;
+  justify-items: center;
+  align-items: center;
   perspective: 1500px;
 }
 
 .project-card {
-  position: absolute;
+  position: relative;
   width: 270px;
   height: 380px;
   transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
@@ -768,15 +773,24 @@ section {
   box-sizing: border-box;
 }
 
+/* Staggered Zig Zag Alignments */
+.project-card:nth-child(odd) {
+  transform: translateY(-20px) rotateZ(-4deg);
+}
+
+.project-card:nth-child(even) {
+  transform: translateY(20px) rotateZ(4deg);
+}
+
 .project-card.active {
   z-index: 100 !important;
-  transform: scale(1.05) rotateZ(0deg) !important;
+  transform: translateY(0) scale(1.05) rotateZ(0deg) !important;
 }
 
 @media (hover: hover) {
   .project-card:hover {
     z-index: 100 !important;
-    transform: scale(1.05) rotateZ(0deg) !important;
+    transform: translateY(0) scale(1.05) rotateZ(0deg) !important;
   }
 }
 
@@ -1762,22 +1776,18 @@ body.admin-active .add-project-card {
   }
 
   .projects-grid {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 45px;
     width: 100%;
-    max-width: 270px;
-    height: auto;
+    max-width: 280px;
     margin: 40px auto;
-    gap: 35px;
+    justify-items: center;
     perspective: 1500px;
   }
   
   .project-card {
     position: relative !important;
-    top: 0 !important;
-    left: 0 !important;
-    transform: none !important;
     width: 220px !important;
     height: 310px !important;
     padding: 0 !important;
@@ -1786,8 +1796,18 @@ body.admin-active .add-project-card {
     box-shadow: none !important;
   }
 
+  /* Mobile Zig Zag Horizontal Offsets */
+  .project-card:nth-child(odd) {
+    transform: translateX(-15px) rotateZ(-3deg) !important;
+  }
+
+  .project-card:nth-child(even) {
+    transform: translateX(15px) rotateZ(3deg) !important;
+  }
+
   .project-card.active {
-    transform: scale(1.03) !important;
+    z-index: 100 !important;
+    transform: translateX(0) scale(1.03) rotateZ(0deg) !important;
     box-shadow: none !important;
   }
 

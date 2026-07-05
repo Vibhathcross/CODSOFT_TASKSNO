@@ -791,18 +791,12 @@ function renderProjects() {
   if (!container) return;
 
   let html = projectsData.map((proj, idx) => {
-    // Calculate card stack layout offsets
-    const topOffset = -50 + idx * 20;
-    const leftOffset = -50 + idx * 20;
-    const zIndex = idx + 1;
-    const rotateDeg = -6;
-
     // Parse comma-separated tags
     const tagArray = typeof proj.tags === 'string' ? proj.tags.split(',') : (Array.isArray(proj.tags) ? proj.tags : []);
     const tagsHTML = tagArray.map(tag => `<span class="tag">${tag.trim()}</span>`).join('');
     
     return `
-      <div class="project-card" style="top: ${topOffset}px; left: ${leftOffset}px; z-index: ${zIndex}; transform: rotateZ(${rotateDeg}deg);" id="project-${proj.id}">
+      <div class="project-card" id="project-${proj.id}">
         <div class="layton-all">
           <!-- Front of the Layton Card -->
           <div class="layton-front">
@@ -845,14 +839,8 @@ function renderProjects() {
   }).join('');
 
   if (isAdminMode) {
-    const idx = projectsData.length;
-    const topOffset = -50 + idx * 20;
-    const leftOffset = -50 + idx * 20;
-    const zIndex = idx + 1;
-    const rotateDeg = -6;
-    
     html += `
-      <div class="project-card add-project-card-stack" id="add-project-trigger" style="top: ${topOffset}px; left: ${leftOffset}px; z-index: ${zIndex}; transform: rotateZ(${rotateDeg}deg);">
+      <div class="project-card add-project-card-stack" id="add-project-trigger">
         <div class="layton-all">
           <div class="layton-front" style="border-style: dashed; border-color: var(--accent-red); background-color: rgba(211, 47, 47, 0.01); box-shadow: none;">
             <div class="layton-icon" style="box-shadow: inset 0px -8px var(--accent-red);">
