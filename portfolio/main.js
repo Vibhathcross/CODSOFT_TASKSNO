@@ -362,9 +362,9 @@ function initThreeBG() {
       const glowYLeft = 50 + Math.sin(scrollPercent * Math.PI * 5) * 45;
       const glowYRight = 50 + Math.cos(scrollPercent * Math.PI * 5) * 45;
       
-      // Set background radial gradients with moving vertical center points
-      glowLeft.style.background = `radial-gradient(circle at -20% ${glowYLeft}%, rgba(211, 47, 47, 0.8) 0%, rgba(211, 47, 47, 0.22) 40%, rgba(211, 47, 47, 0) 100%)`;
-      glowRight.style.background = `radial-gradient(circle at 120% ${glowYRight}%, rgba(211, 47, 47, 0.8) 0%, rgba(211, 47, 47, 0.22) 40%, rgba(211, 47, 47, 0) 100%)`;
+      // Set background radial gradients centered at edges, fading completely at 45px (no overflow/separation lines)
+      glowLeft.style.background = `radial-gradient(circle at 0px ${glowYLeft}%, rgba(211, 47, 47, 0.85) 0%, rgba(211, 47, 47, 0.25) 15px, rgba(211, 47, 47, 0) 45px)`;
+      glowRight.style.background = `radial-gradient(circle at 200px ${glowYRight}%, rgba(211, 47, 47, 0.85) 0%, rgba(211, 47, 47, 0.25) 15px, rgba(211, 47, 47, 0) 45px)`;
 
       // Opacity breathing
       const leftOpacity = 0.6 + 0.35 * Math.sin(scrollPercent * Math.PI * 1.5);
@@ -372,9 +372,9 @@ function initThreeBG() {
       glowLeft.style.opacity = Math.max(0.4, Math.min(leftOpacity, 0.95));
       glowRight.style.opacity = Math.max(0.4, Math.min(rightOpacity, 0.95));
 
-      // Horizontal wave translation
-      const waveLeft = Math.sin(scrollPercent * Math.PI * 8) * 10;
-      const waveRight = Math.cos(scrollPercent * Math.PI * 8) * 10;
+      // Horizontal wave translation (subtle 8px shift)
+      const waveLeft = Math.sin(scrollPercent * Math.PI * 8) * 8;
+      const waveRight = Math.cos(scrollPercent * Math.PI * 8) * 8;
       glowLeft.style.transform = `translateX(${waveLeft}px)`;
       glowRight.style.transform = `translateX(${waveRight}px)`;
     }

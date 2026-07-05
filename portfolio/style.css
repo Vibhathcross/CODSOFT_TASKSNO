@@ -241,7 +241,7 @@ body {
 .scroll-glow-right {
   position: fixed;
   top: 0;
-  width: 120px;
+  width: 200px;
   height: 100vh;
   pointer-events: none;
   z-index: 2;
