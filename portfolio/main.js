@@ -364,11 +364,20 @@ function initThreeBG() {
       const leftY = -15 + scrollPercent * -20;
       const rightY = -35 + scrollPercent * 20;
 
+      // Add high-frequency waves to the horizontal translation and scale
+      const waveFreq = 10; // number of wave peaks over scroll
+      const waveAmp = 25;   // horizontal movement amplitude in pixels
+      const waveLeft = Math.sin(scrollPercent * Math.PI * waveFreq) * waveAmp;
+      const waveRight = Math.cos(scrollPercent * Math.PI * waveFreq) * waveAmp;
+
+      const scaleLeft = 1.05 + scrollPercent * 0.12 + Math.sin(scrollPercent * Math.PI * 6) * 0.08;
+      const scaleRight = 1.05 + (1 - scrollPercent) * 0.12 + Math.cos(scrollPercent * Math.PI * 6) * 0.08;
+
       glowLeft.style.opacity = Math.max(0.35, Math.min(leftOpacity, 0.95));
-      glowLeft.style.transform = `translateY(${leftY}vh) scale(${1.05 + scrollPercent * 0.15})`;
+      glowLeft.style.transform = `translateY(${leftY}vh) translateX(${waveLeft}px) scaleX(${scaleLeft})`;
 
       glowRight.style.opacity = Math.max(0.35, Math.min(rightOpacity, 0.95));
-      glowRight.style.transform = `translateY(${rightY}vh) scale(${1.05 + (1 - scrollPercent) * 0.15})`;
+      glowRight.style.transform = `translateY(${rightY}vh) translateX(${waveRight}px) scaleX(${scaleRight})`;
     }
 
     renderer.render(scene, camera);
