@@ -290,36 +290,6 @@ p {
   gap: 20px;
 }
 
-/* Mobile: make nav horizontally scrollable so all sections are reachable */
-@media (max-width: 768px) {
-  .site-header {
-    padding: 16px 12px;
-    justify-content: flex-start;
-  }
-
-  .nav-links {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 4px 4px 6px;
-    /* Hide scrollbar visually but keep it functional */
-    scrollbar-width: none;       /* Firefox */
-    -ms-overflow-style: none;    /* IE/Edge */
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .nav-links::-webkit-scrollbar {
-    display: none;               /* Chrome/Safari */
-  }
-
-  .nav-btn {
-    flex-shrink: 0;              /* Prevent buttons from squishing */
-    font-size: 0.78rem;
-    padding: 8px 14px;
-    white-space: nowrap;
-  }
-}
 
 .nav-btn {
   text-decoration: none;
@@ -2228,17 +2198,17 @@ body.admin-active .admin-trigger-btn {
 /* Mobile: shift both floating buttons down to clear the nav header */
 @media (max-width: 768px) {
   .fullscreen-toggle-btn {
-    top: 68px;
-    left: 16px;
-    width: 38px;
-    height: 38px;
+    top: 72px !important;
+    left: 16px !important;
+    width: 38px !important;
+    height: 38px !important;
   }
 
   .admin-trigger-btn {
-    top: 68px;
-    right: 16px;
-    width: 38px;
-    height: 38px;
+    top: 72px !important;
+    right: 16px !important;
+    width: 38px !important;
+    height: 38px !important;
   }
 }
 
@@ -2342,6 +2312,48 @@ body.admin-active .admin-trigger-btn {
   font-family: var(--font-display);
   text-align: center;
 }
+
+
+/* ═══════════════════════════════════════════════
+   MOBILE OVERRIDES — Must stay at end of file
+   to guarantee cascade priority
+   ═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Nav header: compact, full-width, scrollable ── */
+  .site-header {
+    padding: 10px 10px !important;
+    justify-content: flex-start !important;
+  }
+
+  /* ── Nav links row: horizontal scroll, no wrap ── */
+  .nav-links {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    gap: 8px !important;
+    padding: 4px 2px 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    scrollbar-width: none !important;       /* Firefox */
+    -ms-overflow-style: none !important;    /* IE */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-links::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* ── Each nav button: no shrink, compact ── */
+  .nav-btn {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    font-size: 0.78rem !important;
+    padding: 8px 14px !important;
+  }
+}
+
 
 
 
