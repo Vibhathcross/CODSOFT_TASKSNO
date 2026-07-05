@@ -241,7 +241,7 @@ body {
 .scroll-glow-right {
   position: fixed;
   top: -30vh;
-  width: 350px;
+  width: 120px;
   height: 160vh;
   pointer-events: none;
   z-index: 2;
@@ -251,12 +251,12 @@ body {
 
 .scroll-glow-left {
   left: 0;
-  background: radial-gradient(circle at -20% 50%, rgba(211, 47, 47, 0.45), rgba(211, 47, 47, 0.15) 50%, rgba(211, 47, 47, 0) 85%);
+  background: linear-gradient(to right, rgba(211, 47, 47, 0.55) 0%, rgba(211, 47, 47, 0.15) 30%, rgba(211, 47, 47, 0) 100%);
 }
 
 .scroll-glow-right {
   right: 0;
-  background: radial-gradient(circle at 120% 50%, rgba(211, 47, 47, 0.45), rgba(211, 47, 47, 0.15) 50%, rgba(211, 47, 47, 0) 85%);
+  background: linear-gradient(to left, rgba(211, 47, 47, 0.55) 0%, rgba(211, 47, 47, 0.15) 30%, rgba(211, 47, 47, 0) 100%);
 }
 
 /* Typography */
