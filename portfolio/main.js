@@ -145,7 +145,11 @@ const fallbackCredentials = [
 
 // Fetch resume asset from database as base64 and generate Object URL
 async function fetchResumeAsset() {
-  if (!supabaseClient) return;
+  if (!supabaseClient) {
+    // No DB: wire up local fallback with JS fetch-blob force download
+    wireLocalResumeDownload();
+    return;
+  }
   try {
     const { data, error } = await supabaseClient.from('assets').select('*').eq('name', 'resume').single();
     if (data && !error) {
@@ -160,12 +164,50 @@ async function fetchResumeAsset() {
       
       const downloadBtn = document.getElementById('resume-download-btn');
       if (downloadBtn) {
-        downloadBtn.href = resumeBlobUrl;
+        // Override click to force download from DB blob
+        downloadBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const a = document.createElement('a');
+          a.href = resumeBlobUrl;
+          a.download = 'Vibhath_TK_Resume.pdf';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
       }
+    } else {
+      // DB had no resume row - fallback to local file
+      wireLocalResumeDownload();
     }
   } catch (err) {
     console.warn('Fallback to local resume PDF due to error:', err);
+    wireLocalResumeDownload();
   }
+}
+
+// Force-download the local resume.pdf as a blob to bypass GitHub Pages MIME restrictions
+function wireLocalResumeDownload() {
+  const downloadBtn = document.getElementById('resume-download-btn');
+  if (!downloadBtn) return;
+  downloadBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('./resume.pdf');
+      if (!response.ok) throw new Error('File not found');
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = 'Vibhath_TK_Resume.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+    } catch (err) {
+      // Last resort: open in new tab
+      window.open('./resume.pdf', '_blank');
+    }
+  });
 }
 
 // Wait for DOM and Third-party libraries to load
