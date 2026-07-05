@@ -797,11 +797,12 @@ async function loadAndRenderContent() {
     document.body.classList.add('admin-active');
   }
 
-  // Initialize Supabase if config url is present
+  // Always use DB: prefer service role key (admin) then anon key (public read-only)
   const dbUrl = localStorage.getItem('supabase_url') || SUPABASE_CONFIG.url;
   
   let dbKey = serviceRoleKey;
   if (!dbKey || dbKey === 'null' || dbKey === 'undefined' || dbKey.length < 10) {
+    // Public user — use anon key for read-only access
     dbKey = localStorage.getItem('supabase_anon_key') || SUPABASE_CONFIG.anonKey;
   }
 
@@ -811,28 +812,25 @@ async function loadAndRenderContent() {
       
       // Fetch Projects
       const { data: projData, error: projErr } = await supabaseClient.from('projects').select('*').order('created_at', { ascending: true });
-      if (!projErr && projData) {
+      if (!projErr && projData && projData.length > 0) {
         projectsData = projData;
       } else {
-        console.warn("Supabase projects load error, using fallback:", projErr);
         projectsData = fallbackProjects;
       }
 
       // Fetch Capabilities
       const { data: capData, error: capErr } = await supabaseClient.from('capabilities').select('*').order('created_at', { ascending: true });
-      if (!capErr && capData) {
+      if (!capErr && capData && capData.length > 0) {
         capabilitiesData = capData;
       } else {
-        console.warn("Supabase capabilities load error, using fallback:", capErr);
         capabilitiesData = fallbackCapabilities;
       }
 
       // Fetch Credentials
       const { data: credData, error: credErr } = await supabaseClient.from('credentials').select('*').order('created_at', { ascending: true });
-      if (!credErr && credData) {
+      if (!credErr && credData && credData.length > 0) {
         credentialsData = credData;
       } else {
-        console.warn("Supabase credentials load error, using fallback:", credErr);
         credentialsData = fallbackCredentials;
       }
 
