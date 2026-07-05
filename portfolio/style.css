@@ -2118,3 +2118,42 @@ body.admin-active .add-project-card {
     align-self: flex-end;
   }
 }
+
+/* Admin and Credentials additions */
+.admin-only-btn {
+  display: none !important;
+}
+body.admin-active .admin-only-btn {
+  display: inline-flex !important;
+}
+
+.add-credential-trigger {
+  display: none;
+  margin-top: 15px;
+  padding: 10px 15px;
+  border: 1.5px dashed var(--accent-red);
+  color: var(--accent-red);
+  background: transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-align: center;
+  width: 100%;
+  box-shadow: var(--neo-btn-raised);
+  transition: all 0.3s;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+body.admin-active .add-credential-trigger {
+  display: inline-flex;
+}
+
+.add-credential-trigger:hover {
+  box-shadow: var(--neo-btn-inset);
+  transform: scale(0.98);
+}
+

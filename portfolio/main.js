@@ -89,6 +89,85 @@ const fallbackCapabilities = [
   }
 ];
 
+let credentialsData = [];
+let resumeBlobUrl = '/resume.pdf'; // default fallback
+
+const fallbackCredentials = [
+  {
+    id: "cr1",
+    type: "education",
+    title: "B.Tech in Information Technology",
+    issuer: "Government Engineering College, Idukki",
+    meta: "Expected Graduation: 2028",
+    link: ""
+  },
+  {
+    id: "cr2",
+    type: "certification",
+    title: "5-Day Web Development Bootcamp (HTML, CSS, JS, React, Tailwind)",
+    issuer: "µLearn IDK & INOVUS LABS IEDC, Kristu Jyoti College",
+    meta: "",
+    link: "https://www.linkedin.com/posts/vibhath-t-k-360b2525a_the-certificate-is-a-certificate-of-completion-ugcPost-7477941498307592193-kSFt/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAD_h6bgB0VdAMlYfvDs6G0DYlvJekttGrIk"
+  },
+  {
+    id: "cr3",
+    type: "certification",
+    title: "Introduction to Generative AI",
+    issuer: "Google Cloud Training (via Coursera)",
+    meta: "",
+    link: "https://www.linkedin.com/posts/vibhath-t-k-360b2525a_my-introduction-to-generative-ai-certification-ugcPost-7476479473157185537-pwDC/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAD_h6bgB0VdAMlYfvDs6G0DYlvJekttGrIk"
+  },
+  {
+    id: "cr4",
+    type: "certification",
+    title: "Foundations of Cybersecurity",
+    issuer: "Google (via Coursera)",
+    meta: "",
+    link: "https://www.linkedin.com/posts/vibhath-t-k-360b2525a_completed-google-foundations-of-cybersecurity-ugcPost-7431922421286256640-B2QM/"
+  },
+  {
+    id: "cr5",
+    type: "certification",
+    title: "30-Day Data Analytics MasterClass",
+    issuer: "NoviTech R&D",
+    meta: "",
+    link: "https://www.linkedin.com/posts/vibhath-t-k-360b2525a_dataanalytics-certification-continuouslearning-share-7351878488020176897-5S1P/"
+  },
+  {
+    id: "cr6",
+    type: "certification",
+    title: "Digital 101 Program",
+    issuer: "NASSCOM & MeitY",
+    meta: "",
+    link: "https://www.linkedin.com/posts/vibhath-t-k-360b2525a_futureskillsprime-digital101-ai-share-7347297810418962436-L3p5/"
+  }
+];
+
+// Fetch resume asset from database as base64 and generate Object URL
+async function fetchResumeAsset() {
+  if (!supabaseClient) return;
+  try {
+    const { data, error } = await supabaseClient.from('assets').select('*').eq('name', 'resume').single();
+    if (data && !error) {
+      const binaryString = atob(data.file_data);
+      const len = binaryString.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const blob = new Blob([bytes], { type: data.file_type || 'application/pdf' });
+      resumeBlobUrl = URL.createObjectURL(blob);
+      
+      const downloadBtn = document.getElementById('resume-download-btn');
+      if (downloadBtn) {
+        downloadBtn.href = resumeBlobUrl;
+      }
+    }
+  } catch (err) {
+    console.warn('Fallback to local resume PDF due to error:', err);
+  }
+}
+
 // Wait for DOM and Third-party libraries to load
 document.addEventListener('DOMContentLoaded', async () => {
   initThreeBG();
@@ -699,19 +778,34 @@ async function loadAndRenderContent() {
         console.warn("Supabase capabilities load error, using fallback:", capErr);
         capabilitiesData = fallbackCapabilities;
       }
+
+      // Fetch Credentials
+      const { data: credData, error: credErr } = await supabaseClient.from('credentials').select('*').order('created_at', { ascending: true });
+      if (!credErr && credData) {
+        credentialsData = credData;
+      } else {
+        console.warn("Supabase credentials load error, using fallback:", credErr);
+        credentialsData = fallbackCredentials;
+      }
+
+      // Fetch Resume File
+      await fetchResumeAsset();
     } catch (err) {
       console.warn("Database initialization failed, using fallback values:", err);
       projectsData = fallbackProjects;
       capabilitiesData = fallbackCapabilities;
+      credentialsData = fallbackCredentials;
     }
   } else {
     // Default to fallback
     projectsData = fallbackProjects;
     capabilitiesData = fallbackCapabilities;
+    credentialsData = fallbackCredentials;
   }
 
   renderCapabilities();
   renderProjects();
+  renderCredentials();
 }
 
 /**
@@ -857,6 +951,76 @@ function renderProjects() {
 }
 
 /**
+ * Render Credentials section (Education and Certifications) dynamically
+ */
+function renderCredentials() {
+  const eduContainer = document.getElementById('education-list');
+  const certContainer = document.getElementById('certifications-list');
+  if (!eduContainer || !certContainer) return;
+
+  const eduItems = credentialsData.filter(c => c.type === 'education');
+  const certItems = credentialsData.filter(c => c.type === 'certification');
+
+  // 1. Render Education Items
+  let eduHTML = eduItems.map(cred => {
+    return `
+      <div class="education-item" id="cred-${cred.id}">
+        <div class="edu-icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="edu-icon"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+        </div>
+        <div class="edu-details">
+          <h4 class="edu-degree">${cred.title}</h4>
+          <p class="edu-school">${cred.issuer}</p>
+          ${cred.meta ? `<span class="edu-date">${cred.meta}</span>` : ''}
+          ${isAdminMode ? `
+            <span class="admin-edit-link edit-credential-trigger" data-id="${cred.id}" style="display: block; margin-top: 8px; font-size: 0.72rem; text-decoration: underline; cursor: pointer; color: var(--accent-red); font-weight: 700; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.5px;">EDIT</span>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (isAdminMode) {
+    eduHTML += `
+      <button class="add-credential-trigger" id="add-edu-trigger" data-type="education">
+        + Add Academic Background
+      </button>
+    `;
+  }
+  eduContainer.innerHTML = eduHTML;
+
+  // 2. Render Certification Items
+  let certHTML = certItems.map(cred => {
+    return `
+      <div class="cert-item" id="cred-${cred.id}">
+        <div class="cert-info">
+          <h4 class="cert-title">${cred.title}</h4>
+          <p class="cert-issuer">${cred.issuer}</p>
+          ${cred.meta ? `<span style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 4px;">${cred.meta}</span>` : ''}
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+          ${cred.link ? `
+            <a href="${cred.link}" target="_blank" rel="noopener noreferrer" class="cert-verify-btn">Verify</a>
+          ` : ''}
+          ${isAdminMode ? `
+            <span class="admin-edit-link edit-credential-trigger" data-id="${cred.id}" style="font-size: 0.72rem; text-decoration: underline; cursor: pointer; color: var(--accent-red); font-weight: 700; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">EDIT</span>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (isAdminMode) {
+    certHTML += `
+      <button class="add-credential-trigger" id="add-cert-trigger" data-type="certification">
+        + Add Certification
+      </button>
+    `;
+  }
+  certContainer.innerHTML = certHTML;
+}
+
+/**
  * Admin Credentials Portal & Logout Orchestrator
  */
 function initCMS() {
@@ -966,9 +1130,56 @@ function initCMS() {
     reader.readAsText(file);
   }
 
+  // Resume upload handler
+  const resumeUploadBtn = document.getElementById('admin-resume-upload-btn');
+  const resumeFileInput = document.getElementById('admin-resume-file-input');
+  
+  if (resumeUploadBtn && resumeFileInput) {
+    resumeUploadBtn.addEventListener('click', () => {
+      resumeFileInput.click();
+    });
+    
+    resumeFileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.type !== 'application/pdf') {
+        alert('Please upload a PDF file only.');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const base64Data = event.target.result.split(',')[1];
+        try {
+          if (!supabaseClient) {
+            alert('Supabase is not connected. Credentials upload is only available when online.');
+            return;
+          }
+          
+          resumeUploadBtn.innerText = 'Uploading...';
+          const { error } = await supabaseClient.from('assets').upsert({
+            name: 'resume',
+            file_data: base64Data,
+            file_type: 'application/pdf',
+            updated_at: new Date()
+          });
+          
+          if (error) throw error;
+          alert('Resume uploaded successfully! Reloading...');
+          location.reload();
+        } catch (err) {
+          alert('Error uploading resume: ' + err.message);
+          resumeUploadBtn.innerText = 'Upload PDF';
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   // Hook Editors
   initProjectEditor();
   initCapabilityEditor();
+  initCredentialEditor();
 }
 
 /**
@@ -1190,6 +1401,121 @@ function initCapabilityEditor() {
         location.reload();
       } catch (err) {
         alert("Error deleting capability: " + err.message);
+      }
+    }
+  });
+}
+
+/**
+ * Credentials editor controller (education and certifications CRUD)
+ */
+function initCredentialEditor() {
+  const modal = document.getElementById('credential-editor-modal');
+  const closeBtn = document.getElementById('credential-editor-modal-close');
+  const form = document.getElementById('credential-editor-form');
+  const deleteBtn = document.getElementById('edit-credential-delete');
+  const editorTitle = document.getElementById('credential-editor-title');
+
+  if (!modal || !form || !deleteBtn || !editorTitle) return;
+
+  // Open modal for Adding a new credential
+  document.addEventListener('click', (e) => {
+    const addEduTrigger = e.target.closest('#add-edu-trigger');
+    const addCertTrigger = e.target.closest('#add-cert-trigger');
+    
+    if (addEduTrigger || addCertTrigger) {
+      const type = addEduTrigger ? 'education' : 'certification';
+      editorTitle.innerText = addEduTrigger ? "Add Academic Background" : "Add Certification";
+      
+      form.reset();
+      document.getElementById('edit-credential-id').value = "";
+      document.getElementById('edit-credential-type').value = type;
+      deleteBtn.style.display = "none";
+      modal.classList.add('open');
+    }
+  });
+
+  // Open modal for Editing a credential
+  document.addEventListener('click', (e) => {
+    const editTrigger = e.target.closest('.edit-credential-trigger');
+    if (editTrigger) {
+      const credId = editTrigger.getAttribute('data-id');
+      const cred = credentialsData.find(c => c.id == credId);
+      if (cred) {
+        editorTitle.innerText = cred.type === 'education' ? "Edit Academic Background" : "Edit Certification";
+        document.getElementById('edit-credential-id').value = cred.id;
+        document.getElementById('edit-credential-type').value = cred.type;
+        document.getElementById('edit-credential-title').value = cred.title;
+        document.getElementById('edit-credential-issuer').value = cred.issuer;
+        document.getElementById('edit-credential-meta').value = cred.meta || "";
+        document.getElementById('edit-credential-link').value = cred.link || "";
+        
+        deleteBtn.style.display = "block";
+        modal.classList.add('open');
+      }
+    }
+  });
+
+  // Close modals
+  const closeModal = () => modal.classList.remove('open');
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Form Submit (Save / Update / Insert)
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!supabaseClient) {
+      alert("Error: Supabase database is not initialized. Setup your credentials file first.");
+      return;
+    }
+
+    const id = document.getElementById('edit-credential-id').value;
+    const type = document.getElementById('edit-credential-type').value;
+    const title = document.getElementById('edit-credential-title').value;
+    const issuer = document.getElementById('edit-credential-issuer').value;
+    const meta = document.getElementById('edit-credential-meta').value;
+    const link = document.getElementById('edit-credential-link').value;
+
+    const payload = {
+      type,
+      title,
+      issuer,
+      meta: meta || null,
+      link: link || null
+    };
+
+    try {
+      if (id) {
+        // UPDATE existing credential
+        const { error } = await supabaseClient.from('credentials').update(payload).eq('id', id);
+        if (error) throw error;
+        alert("Credential updated successfully!");
+      } else {
+        // INSERT new credential
+        const { error } = await supabaseClient.from('credentials').insert([payload]);
+        if (error) throw error;
+        alert("Credential added successfully!");
+      }
+      location.reload();
+    } catch (err) {
+      alert("Error saving credential: " + err.message);
+    }
+  });
+
+  // Delete Credential
+  deleteBtn.addEventListener('click', async () => {
+    const id = document.getElementById('edit-credential-id').value;
+    if (!id) return;
+    if (confirm("Are you sure you want to delete this credential?")) {
+      try {
+        const { error } = await supabaseClient.from('credentials').delete().eq('id', id);
+        if (error) throw error;
+        alert("Credential deleted successfully!");
+        location.reload();
+      } catch (err) {
+        alert("Error deleting credential: " + err.message);
       }
     }
   });
