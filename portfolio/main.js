@@ -747,15 +747,21 @@ function updateActiveSectionLabel(name) {
  * Dynamic content loader & compiler
  */
 async function loadAndRenderContent() {
-  // Check admin state from local/session storage service role key presence
-  isAdminMode = localStorage.getItem('supabase_service_role_key') !== null || sessionStorage.getItem('supabase_service_role_key') !== null;
+  // Check admin state from local/session storage service role key presence strictly (preventing "null"/"undefined" string bypasses)
+  const serviceRoleKey = localStorage.getItem('supabase_service_role_key') || sessionStorage.getItem('supabase_service_role_key');
+  isAdminMode = !!(serviceRoleKey && serviceRoleKey !== 'null' && serviceRoleKey !== 'undefined' && serviceRoleKey.length > 10);
+  
   if (isAdminMode) {
     document.body.classList.add('admin-active');
   }
 
   // Initialize Supabase if config url is present
   const dbUrl = localStorage.getItem('supabase_url') || SUPABASE_CONFIG.url;
-  const dbKey = localStorage.getItem('supabase_service_role_key') || sessionStorage.getItem('supabase_service_role_key') || localStorage.getItem('supabase_anon_key') || SUPABASE_CONFIG.anonKey;
+  
+  let dbKey = serviceRoleKey;
+  if (!dbKey || dbKey === 'null' || dbKey === 'undefined' || dbKey.length < 10) {
+    dbKey = localStorage.getItem('supabase_anon_key') || SUPABASE_CONFIG.anonKey;
+  }
 
   if (dbUrl && dbKey && typeof supabase !== 'undefined') {
     try {
