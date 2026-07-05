@@ -358,17 +358,17 @@ function initThreeBG() {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const scrollPercent = maxScroll > 0 ? Math.min(Math.max(currentScrollY / maxScroll, 0), 1) : 0;
       
-      const leftOpacity = 0.35 + 0.45 * Math.sin(scrollPercent * Math.PI * 1.5);
-      const rightOpacity = 0.35 + 0.45 * Math.cos(scrollPercent * Math.PI * 1.5);
+      const leftOpacity = 0.55 + 0.4 * Math.sin(scrollPercent * Math.PI * 1.5);
+      const rightOpacity = 0.55 + 0.4 * Math.cos(scrollPercent * Math.PI * 1.5);
       
       const leftY = -15 + scrollPercent * -20;
       const rightY = -35 + scrollPercent * 20;
 
-      glowLeft.style.opacity = Math.max(0.15, Math.min(leftOpacity, 0.85));
-      glowLeft.style.transform = `translateY(${leftY}vh) scale(${1 + scrollPercent * 0.12})`;
+      glowLeft.style.opacity = Math.max(0.35, Math.min(leftOpacity, 0.95));
+      glowLeft.style.transform = `translateY(${leftY}vh) scale(${1.05 + scrollPercent * 0.15})`;
 
-      glowRight.style.opacity = Math.max(0.15, Math.min(rightOpacity, 0.85));
-      glowRight.style.transform = `translateY(${rightY}vh) scale(${1 + (1 - scrollPercent) * 0.12})`;
+      glowRight.style.opacity = Math.max(0.35, Math.min(rightOpacity, 0.95));
+      glowRight.style.transform = `translateY(${rightY}vh) scale(${1.05 + (1 - scrollPercent) * 0.15})`;
     }
 
     renderer.render(scene, camera);
