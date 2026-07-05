@@ -843,21 +843,32 @@ section {
   align-items: center;
 }
 
-.layton-icon {
-  width: 110px;
-  height: 90px;
-  display: flex;
-  justify-content: center;
-  box-shadow: inset 0px -8px #7f1616;
+/* Layton Card Front Title styling */
+.layton-front-title {
+  padding: 0 20px;
   margin-bottom: 25px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.layton-hat {
-  width: 68px;
-  height: 82px;
-  background-color: #7f1616;
-  box-shadow: inset 0px -15px var(--accent-red);
-  border-radius: 4px 4px 0 0;
+.layton-front-title h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #7f1616;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+/* Hide admin controls when card is hovered or flipped open */
+.project-card.active .admin-controls,
+.project-card:hover .admin-controls {
+  display: none !important;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .layton-text p {
@@ -1816,17 +1827,8 @@ body.admin-active .add-project-card {
     border-width: 8px !important;
   }
 
-  .layton-icon {
-    width: 90px !important;
-    height: 75px !important;
-    box-shadow: inset 0px -6px #7f1616 !important;
-    margin-bottom: 15px !important;
-  }
-
-  .layton-hat {
-    width: 54px !important;
-    height: 68px !important;
-    box-shadow: inset 0px -12px var(--accent-red) !important;
+  .layton-front-title h3 {
+    font-size: 0.95rem !important;
   }
 
   .layton-text p {
