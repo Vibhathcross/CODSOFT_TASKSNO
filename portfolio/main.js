@@ -1035,10 +1035,14 @@ function renderCredentials() {
   }
   eduContainer.innerHTML = eduHTML;
 
-  // 2. Render Certification Items
+  // 2. Render Certification Items (with optional thumbnail)
   let certHTML = certItems.map(cred => {
+    const thumb = cred.image_data
+      ? `<img class="cert-thumb" src="data:image/jpeg;base64,${cred.image_data}" alt="${cred.title} certificate" data-fullsrc="data:image/jpeg;base64,${cred.image_data}" />`
+      : '';
     return `
       <div class="cert-item" id="cred-${cred.id}">
+        ${thumb ? `<div class="cert-thumb-wrap">${thumb}</div>` : ''}
         <div class="cert-info">
           <h4 class="cert-title">${cred.title}</h4>
           <p class="cert-issuer">${cred.issuer}</p>
@@ -1064,6 +1068,18 @@ function renderCredentials() {
     `;
   }
   certContainer.innerHTML = certHTML;
+
+  // Wire thumbnail lightbox clicks
+  certContainer.querySelectorAll('.cert-thumb').forEach(img => {
+    img.addEventListener('click', () => {
+      const lightbox = document.getElementById('cert-lightbox');
+      const lightboxImg = document.getElementById('cert-lightbox-img');
+      if (lightbox && lightboxImg) {
+        lightboxImg.src = img.dataset.fullsrc;
+        lightbox.classList.add('open');
+      }
+    });
+  });
 }
 
 /**
@@ -1466,19 +1482,65 @@ function initCredentialEditor() {
 
   if (!modal || !form || !deleteBtn || !editorTitle) return;
 
+  // --- Image upload wiring ---
+  const imgUploadBox  = document.getElementById('cert-img-preview-box');
+  const imgFileInput  = document.getElementById('edit-credential-image');
+  const imgPreview    = document.getElementById('cert-img-preview');
+  const imgPlaceholder = document.getElementById('cert-img-placeholder');
+  const imgDataInput  = document.getElementById('edit-credential-image-data');
+
+  if (imgUploadBox && imgFileInput) {
+    imgUploadBox.addEventListener('click', () => imgFileInput.click());
+    imgFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target.result;
+        // Store pure base64 (strip the data:...;base64, prefix)
+        imgDataInput.value = dataUrl.split(',')[1];
+        // Preview
+        imgPreview.src = dataUrl;
+        imgPreview.style.display = 'block';
+        imgPlaceholder.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function resetImagePreview(existingBase64) {
+    if (!imgPreview || !imgPlaceholder || !imgDataInput) return;
+    if (existingBase64) {
+      imgPreview.src = `data:image/jpeg;base64,${existingBase64}`;
+      imgPreview.style.display = 'block';
+      imgPlaceholder.style.display = 'none';
+      imgDataInput.value = existingBase64;
+    } else {
+      imgPreview.src = '';
+      imgPreview.style.display = 'none';
+      imgPlaceholder.style.display = 'block';
+      imgDataInput.value = '';
+    }
+    if (imgFileInput) imgFileInput.value = '';
+  }
+
   // Open modal for Adding a new credential
   document.addEventListener('click', (e) => {
     const addEduTrigger = e.target.closest('#add-edu-trigger');
     const addCertTrigger = e.target.closest('#add-cert-trigger');
-    
+
     if (addEduTrigger || addCertTrigger) {
       const type = addEduTrigger ? 'education' : 'certification';
       editorTitle.innerText = addEduTrigger ? "Add Academic Background" : "Add Certification";
-      
+
       form.reset();
-      document.getElementById('edit-credential-id').value = "";
+      document.getElementById('edit-credential-id').value = '';
       document.getElementById('edit-credential-type').value = type;
-      deleteBtn.style.display = "none";
+      resetImagePreview(null);
+      // Only show image upload for certifications
+      const imgGroup = document.getElementById('cert-image-group');
+      if (imgGroup) imgGroup.style.display = type === 'certification' ? 'block' : 'none';
+      deleteBtn.style.display = 'none';
       modal.classList.add('open');
     }
   });
@@ -1495,16 +1557,19 @@ function initCredentialEditor() {
         document.getElementById('edit-credential-type').value = cred.type;
         document.getElementById('edit-credential-title').value = cred.title;
         document.getElementById('edit-credential-issuer').value = cred.issuer;
-        document.getElementById('edit-credential-meta').value = cred.meta || "";
-        document.getElementById('edit-credential-link').value = cred.link || "";
-        
-        deleteBtn.style.display = "block";
+        document.getElementById('edit-credential-meta').value = cred.meta || '';
+        document.getElementById('edit-credential-link').value = cred.link || '';
+        resetImagePreview(cred.image_data || null);
+        // Only show image upload for certifications
+        const imgGroup = document.getElementById('cert-image-group');
+        if (imgGroup) imgGroup.style.display = cred.type === 'certification' ? 'block' : 'none';
+        deleteBtn.style.display = 'block';
         modal.classList.add('open');
       }
     }
   });
 
-  // Close modals
+  // Close modal
   const closeModal = () => modal.classList.remove('open');
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => {
@@ -1515,40 +1580,40 @@ function initCredentialEditor() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!supabaseClient) {
-      alert("Error: Supabase database is not initialized. Setup your credentials file first.");
+      alert('Error: Supabase database is not initialized. Setup your credentials file first.');
       return;
     }
 
-    const id = document.getElementById('edit-credential-id').value;
-    const type = document.getElementById('edit-credential-type').value;
-    const title = document.getElementById('edit-credential-title').value;
-    const issuer = document.getElementById('edit-credential-issuer').value;
-    const meta = document.getElementById('edit-credential-meta').value;
-    const link = document.getElementById('edit-credential-link').value;
+    const id       = document.getElementById('edit-credential-id').value;
+    const type     = document.getElementById('edit-credential-type').value;
+    const title    = document.getElementById('edit-credential-title').value;
+    const issuer   = document.getElementById('edit-credential-issuer').value;
+    const meta     = document.getElementById('edit-credential-meta').value;
+    const link     = document.getElementById('edit-credential-link').value;
+    const imgData  = imgDataInput ? imgDataInput.value : '';
 
     const payload = {
       type,
       title,
       issuer,
       meta: meta || null,
-      link: link || null
+      link: link || null,
+      image_data: imgData || null
     };
 
     try {
       if (id) {
-        // UPDATE existing credential
         const { error } = await supabaseClient.from('credentials').update(payload).eq('id', id);
         if (error) throw error;
-        alert("Credential updated successfully!");
+        alert('Credential updated successfully!');
       } else {
-        // INSERT new credential
         const { error } = await supabaseClient.from('credentials').insert([payload]);
         if (error) throw error;
-        alert("Credential added successfully!");
+        alert('Credential added successfully!');
       }
       location.reload();
     } catch (err) {
-      alert("Error saving credential: " + err.message);
+      alert('Error saving credential: ' + err.message);
     }
   });
 
@@ -1556,15 +1621,24 @@ function initCredentialEditor() {
   deleteBtn.addEventListener('click', async () => {
     const id = document.getElementById('edit-credential-id').value;
     if (!id) return;
-    if (confirm("Are you sure you want to delete this credential?")) {
+    if (confirm('Are you sure you want to delete this credential?')) {
       try {
         const { error } = await supabaseClient.from('credentials').delete().eq('id', id);
         if (error) throw error;
-        alert("Credential deleted successfully!");
+        alert('Credential deleted successfully!');
         location.reload();
       } catch (err) {
-        alert("Error deleting credential: " + err.message);
+        alert('Error deleting credential: ' + err.message);
       }
     }
   });
+
+  // Lightbox close
+  const lightbox = document.getElementById('cert-lightbox');
+  const lightboxClose = document.getElementById('cert-lightbox-close');
+  if (lightbox) {
+    const closeLightbox = () => lightbox.classList.remove('open');
+    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  }
 }

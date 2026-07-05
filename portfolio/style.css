@@ -2194,4 +2194,106 @@ body.admin-active .admin-trigger-btn {
   box-shadow: var(--neo-btn-inset);
 }
 
+/* ──── Certification Thumbnail Image ──── */
+.cert-thumb-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cert-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: var(--neo-btn-raised);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: zoom-in;
+}
+
+.cert-thumb:hover {
+  transform: scale(1.08);
+  box-shadow: 6px 6px 14px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+}
+
+/* Lightbox overlay for full-size cert image */
+#cert-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+
+#cert-lightbox.open {
+  display: flex;
+}
+
+#cert-lightbox img {
+  max-width: 88vw;
+  max-height: 88vh;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  animation: lightbox-pop 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes lightbox-pop {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+#cert-lightbox-close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2.2rem;
+  cursor: pointer;
+  line-height: 1;
+  z-index: 100000;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+#cert-lightbox-close:hover {
+  opacity: 1;
+}
+
+/* Image upload box in credential editor */
+.cert-img-upload-box {
+  width: 100%;
+  min-height: 90px;
+  border: 2px dashed rgba(211, 47, 47, 0.4);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 12px;
+  gap: 12px;
+  box-shadow: var(--neo-btn-inset);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  flex-wrap: wrap;
+}
+
+.cert-img-upload-box:hover {
+  border-color: var(--accent-red);
+  box-shadow: var(--neo-btn-raised);
+}
+
+#cert-img-placeholder {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  text-align: center;
+}
+
+
 

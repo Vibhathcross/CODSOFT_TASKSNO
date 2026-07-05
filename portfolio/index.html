@@ -379,12 +379,27 @@
           <label for="edit-credential-link">Verification URL / LinkedIn Link</label>
           <input type="url" id="edit-credential-link" placeholder="e.g. https://www.linkedin.com/... (Optional)" class="neomorphic-input" />
         </div>
+        <div class="form-group" id="cert-image-group">
+          <label>Certificate Image (Optional thumbnail)</label>
+          <div class="cert-img-upload-box" id="cert-img-preview-box">
+            <img id="cert-img-preview" src="" alt="" style="display:none; max-height:100px; border-radius:8px; object-fit:contain;" />
+            <span id="cert-img-placeholder">Click to upload image</span>
+          </div>
+          <input type="file" id="edit-credential-image" accept="image/*" style="display:none;" />
+          <input type="hidden" id="edit-credential-image-data" />
+        </div>
         <div class="editor-actions">
           <button type="button" id="edit-credential-delete" class="neomorphic-btn delete-btn">Delete Credential</button>
           <button type="submit" class="neomorphic-btn primary-btn">Save Credential</button>
         </div>
       </form>
     </div>
+  </div>
+
+  <!-- Certificate Image Lightbox -->
+  <div id="cert-lightbox">
+    <button id="cert-lightbox-close">&times;</button>
+    <img id="cert-lightbox-img" src="" alt="Certificate" />
   </div>
 
   <!-- External Script CDNs (Three.js, GSAP + ScrollTrigger, Supabase) -->
