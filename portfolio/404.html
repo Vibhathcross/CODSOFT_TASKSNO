@@ -310,54 +310,6 @@
       const icosahedron = new THREE.Mesh(geometry, material);
       scene.add(icosahedron);
 
-      // --- Neon Rain Setup ---
-      const rainCount = 120;
-      const rainPositions = new Float32Array(rainCount * 3); // 1 vertex per point (x,y,z)
-      const rainSpeeds = [];
-
-      for (let i = 0; i < rainCount; i++) {
-        rainPositions[i * 3] = (Math.random() - 0.5) * 15;
-        rainPositions[i * 3 + 1] = Math.random() * 20 - 10;
-        rainPositions[i * 3 + 2] = Math.random() * 4 - 2;
-        rainSpeeds.push(0.02 + Math.random() * 0.04);
-      }
-
-      const rainGeometry = new THREE.BufferGeometry();
-      rainGeometry.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
-
-      // Create circular neon drop texture programmatically
-      const canvasTextureElement = document.createElement('canvas');
-      canvasTextureElement.width = 32;
-      canvasTextureElement.height = 32;
-      const textureCtx = canvasTextureElement.getContext('2d');
-
-      // Radial gradient: white hot center, transitioning to neon red, transitioning to transparent edge
-      const dropGradient = textureCtx.createRadialGradient(16, 16, 1, 16, 16, 15);
-      dropGradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');     // Pure white hot core
-      dropGradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
-      dropGradient.addColorStop(0.4, 'rgba(255, 0, 51, 0.85)');     // Glowing neon red boundary
-      dropGradient.addColorStop(1, 'rgba(255, 0, 51, 0)');          // Fading edge
-
-      textureCtx.fillStyle = dropGradient;
-      textureCtx.beginPath();
-      textureCtx.arc(16, 16, 16, 0, Math.PI * 2);
-      textureCtx.fill();
-
-      const rainTexture = new THREE.CanvasTexture(canvasTextureElement);
-
-      const rainMaterial = new THREE.PointsMaterial({
-        size: 0.22,
-        map: rainTexture,
-        transparent: true,
-        opacity: 0.8,
-        depthWrite: false,
-        blending: THREE.NormalBlending
-      });
-
-      const rain = new THREE.Points(rainGeometry, rainMaterial);
-      rain.frustumCulled = false;
-      scene.add(rain);
-
       const clock = new THREE.Clock();
       
       function animate() {
@@ -365,23 +317,6 @@
         const elapsedTime = clock.getElapsedTime();
         icosahedron.rotation.y = elapsedTime * 0.04;
         icosahedron.rotation.x = elapsedTime * 0.02;
-
-        // Update Neon Rain Positions
-        const positions = rainGeometry.attributes.position.array;
-        for (let i = 0; i < rainCount; i++) {
-          let y = positions[i * 3 + 1];
-          y -= rainSpeeds[i];
-          
-          // Reset if below viewport bounds
-          if (y < -10) {
-            positions[i * 3] = (Math.random() - 0.5) * 15;
-            y = 10;
-            positions[i * 3 + 2] = Math.random() * 4 - 2;
-          }
-          
-          positions[i * 3 + 1] = y;
-        }
-        rainGeometry.attributes.position.needsUpdate = true;
 
         renderer.render(scene, camera);
       }

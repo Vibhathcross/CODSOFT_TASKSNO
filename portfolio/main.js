@@ -247,40 +247,9 @@ function initThreeBG() {
   nonIndexed.dispose();
 
   // ── Neon Rain Setup ──────────────────────────────────────────────────
-  const rainCount = 120;
-  const rainPositions = new Float32Array(rainCount * 3);
-  const rainSpeeds = [];
-  for (let i = 0; i < rainCount; i++) {
-    rainPositions[i * 3]     = (Math.random() - 0.5) * 15;
-    rainPositions[i * 3 + 1] = Math.random() * 20 - 10;
-    rainPositions[i * 3 + 2] = Math.random() * 4 - 2;
-    rainSpeeds.push(0.02 + Math.random() * 0.04);
-  }
-  const rainGeometry = new THREE.BufferGeometry();
-  rainGeometry.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
-
-  const canvasTextureElement = document.createElement('canvas');
-  canvasTextureElement.width = 32;
-  canvasTextureElement.height = 32;
-  const textureCtx = canvasTextureElement.getContext('2d');
-  const dropGradient = textureCtx.createRadialGradient(16, 16, 1, 16, 16, 15);
-  dropGradient.addColorStop(0,   'rgba(255, 255, 255, 1.0)');
-  dropGradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
-  dropGradient.addColorStop(0.4, 'rgba(255, 0, 51, 0.85)');
-  dropGradient.addColorStop(1,   'rgba(255, 0, 51, 0)');
-  textureCtx.fillStyle = dropGradient;
-  textureCtx.beginPath();
-  textureCtx.arc(16, 16, 16, 0, Math.PI * 2);
-  textureCtx.fill();
-  const rainTexture = new THREE.CanvasTexture(canvasTextureElement);
-  const rainMaterial = new THREE.PointsMaterial({
-    size: 0.22, map: rainTexture,
-    transparent: true, opacity: 0.8,
-    depthWrite: false, blending: THREE.NormalBlending
-  });
-  const rain = new THREE.Points(rainGeometry, rainMaterial);
-  rain.frustumCulled = false;
-  scene.add(rain);
+  // Get glow elements
+  const glowLeft = document.getElementById('scroll-glow-left');
+  const glowRight = document.getElementById('scroll-glow-right');
 
   // ── Animation state ───────────────────────────────────────────────────
   const clock = new THREE.Clock();
@@ -384,19 +353,23 @@ function initThreeBG() {
       }
     }
 
-    // ─ Neon Rain ─
-    const positions = rainGeometry.attributes.position.array;
-    for (let i = 0; i < rainCount; i++) {
-      let y = positions[i * 3 + 1];
-      y -= rainSpeeds[i];
-      if (y < -10) {
-        positions[i * 3] = (Math.random() - 0.5) * 15;
-        y = 10;
-        positions[i * 3 + 2] = Math.random() * 4 - 2;
-      }
-      positions[i * 3 + 1] = y;
+    // ─ Scroll-driven Side Glow Animation ─
+    if (glowLeft && glowRight) {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = maxScroll > 0 ? Math.min(Math.max(currentScrollY / maxScroll, 0), 1) : 0;
+      
+      const leftOpacity = 0.35 + 0.45 * Math.sin(scrollPercent * Math.PI * 1.5);
+      const rightOpacity = 0.35 + 0.45 * Math.cos(scrollPercent * Math.PI * 1.5);
+      
+      const leftY = -15 + scrollPercent * -20;
+      const rightY = -35 + scrollPercent * 20;
+
+      glowLeft.style.opacity = Math.max(0.15, Math.min(leftOpacity, 0.85));
+      glowLeft.style.transform = `translateY(${leftY}vh) scale(${1 + scrollPercent * 0.12})`;
+
+      glowRight.style.opacity = Math.max(0.15, Math.min(rightOpacity, 0.85));
+      glowRight.style.transform = `translateY(${rightY}vh) scale(${1 + (1 - scrollPercent) * 0.12})`;
     }
-    rainGeometry.attributes.position.needsUpdate = true;
 
     renderer.render(scene, camera);
   }
