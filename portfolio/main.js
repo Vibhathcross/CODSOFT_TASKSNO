@@ -747,15 +747,15 @@ function updateActiveSectionLabel(name) {
  * Dynamic content loader & compiler
  */
 async function loadAndRenderContent() {
-  // Check admin state from local/session storage
-  isAdminMode = sessionStorage.getItem('portfolio_admin_active') === 'true' || localStorage.getItem('portfolio_admin_active') === 'true';
+  // Check admin state from local/session storage service role key presence
+  isAdminMode = localStorage.getItem('supabase_service_role_key') !== null || sessionStorage.getItem('supabase_service_role_key') !== null;
   if (isAdminMode) {
     document.body.classList.add('admin-active');
   }
 
   // Initialize Supabase if config url is present
   const dbUrl = localStorage.getItem('supabase_url') || SUPABASE_CONFIG.url;
-  const dbKey = sessionStorage.getItem('supabase_service_role_key') || localStorage.getItem('supabase_anon_key') || SUPABASE_CONFIG.anonKey;
+  const dbKey = localStorage.getItem('supabase_service_role_key') || sessionStorage.getItem('supabase_service_role_key') || localStorage.getItem('supabase_anon_key') || SUPABASE_CONFIG.anonKey;
 
   if (dbUrl && dbKey && typeof supabase !== 'undefined') {
     try {
@@ -1073,6 +1073,7 @@ function initCMS() {
   // Logout
   logoutBtn.addEventListener('click', () => {
     localStorage.removeItem('portfolio_admin_active');
+    localStorage.removeItem('supabase_service_role_key');
     sessionStorage.removeItem('portfolio_admin_active');
     sessionStorage.removeItem('supabase_service_role_key');
     alert("Admin Mode deactivated.");
@@ -1114,6 +1115,7 @@ function initCMS() {
           localStorage.setItem('portfolio_admin_active', 'true');
           localStorage.setItem('supabase_url', creds.supabase_url);
           localStorage.setItem('supabase_anon_key', creds.supabase_anon_key);
+          localStorage.setItem('supabase_service_role_key', creds.supabase_service_role_key);
           sessionStorage.setItem('supabase_service_role_key', creds.supabase_service_role_key);
           sessionStorage.setItem('portfolio_admin_active', 'true');
           
