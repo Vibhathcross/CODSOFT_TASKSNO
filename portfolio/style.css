@@ -2157,3 +2157,41 @@ body.admin-active .add-credential-trigger {
   transform: scale(0.98);
 }
 
+/* Floating Permanent Admin Trigger Button */
+.admin-trigger-btn {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--bg-color);
+  box-shadow: var(--neo-btn-raised);
+  color: var(--text-muted);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10005; /* stays just above content but below preloader */
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.admin-trigger-btn:hover {
+  color: var(--accent-red);
+  box-shadow: var(--neo-btn-inset);
+  transform: scale(0.95);
+}
+
+.admin-trigger-btn svg {
+  width: 18px;
+  height: 18px;
+  transition: stroke 0.3s;
+}
+
+body.admin-active .admin-trigger-btn {
+  color: var(--accent-red);
+  box-shadow: var(--neo-btn-inset);
+}
+
+
