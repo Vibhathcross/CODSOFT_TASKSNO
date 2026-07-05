@@ -1592,6 +1592,9 @@ function initCredentialEditor() {
     const link     = document.getElementById('edit-credential-link').value;
     const imgData  = imgDataInput ? imgDataInput.value : '';
 
+    const saveBtn = form.querySelector('[type="submit"]');
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.innerText = 'Saving...'; }
+
     const payload = {
       type,
       title,
@@ -1601,18 +1604,34 @@ function initCredentialEditor() {
       image_data: imgData || null
     };
 
+    const payloadNoImg = { type, title, issuer, meta: meta || null, link: link || null };
+
     try {
+      let error;
       if (id) {
-        const { error } = await supabaseClient.from('credentials').update(payload).eq('id', id);
-        if (error) throw error;
-        alert('Credential updated successfully!');
+        ({ error } = await supabaseClient.from('credentials').update(payload).eq('id', id));
+        // If image_data column doesn't exist yet, retry without it
+        if (error && error.message && error.message.includes('image_data')) {
+          ({ error } = await supabaseClient.from('credentials').update(payloadNoImg).eq('id', id));
+          if (!error) alert('Credential updated (image not saved — run the SQL migration in Supabase to enable image uploads).');
+        } else if (!error) {
+          alert('Credential updated successfully!');
+        }
       } else {
-        const { error } = await supabaseClient.from('credentials').insert([payload]);
-        if (error) throw error;
-        alert('Credential added successfully!');
+        ({ error } = await supabaseClient.from('credentials').insert([payload]));
+        // If image_data column doesn't exist yet, retry without it
+        if (error && error.message && error.message.includes('image_data')) {
+          ({ error } = await supabaseClient.from('credentials').insert([payloadNoImg]));
+          if (!error) alert('Credential added (image not saved — run the SQL migration in Supabase to enable image uploads).');
+        } else if (!error) {
+          alert('Credential added successfully!');
+        }
       }
+
+      if (error) throw error;
       location.reload();
     } catch (err) {
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.innerText = 'Save Credential'; }
       alert('Error saving credential: ' + err.message);
     }
   });
