@@ -10,19 +10,51 @@ let capabilitiesData = [];
 const fallbackProjects = [
   {
     id: "p1",
-    title: "Jasmin: The Intelligent Assistant Framework",
+    title: "Jasmin AI Assistant & OS Automation",
     category: "Featured System",
-    description: "A custom, long-term AI assistant project featuring a dedicated React user interface, local offline wake-word recognition engines, and asynchronous Telegram bot integration operating on a secure local/cloud hybrid strategy.",
-    tags: "React, AI/Voice, Hybrid Architecture, Node.js",
-    link: "https://github.com/Vibhathcross"
+    description: "Designed a hybrid local/cloud AI assistant ecosystem with an advanced React UI and native OS controls for automated system operations. Built 'MTM' for deep progress analytics and integrated background yt-dlp servers for headless audio streaming.",
+    tags: "React, AI/Voice, OS Control, Node.js",
+    link: "https://github.com/Vibhathcross/jasmin-AI"
   },
   {
     id: "p2",
-    title: "Secure Access Gateway",
-    category: "Security Simulation",
-    description: "An interactive, browser-based web application utilizing the Web Audio API and hardware-accelerated CSS keyframe animations to create a highly responsive, engineered security simulation interface.",
-    tags: "Web Audio API, CSS3 Matrix, Interactive UI",
-    link: "https://github.com/Vibhathcross"
+    title: "AeroStream",
+    category: "Desktop Utility",
+    description: "Engineered a premium desktop media companion for ad-free YouTube search, video playback, and offline downloads utilizing Electron, React, and Vite. Intercepted CORS constraints, seamlessly integrating yt-dlp and ffmpeg for automated stream extraction and local transcoding.",
+    tags: "Electron, React, Vite, yt-dlp, FFmpeg",
+    link: "https://github.com/Vibhathcross/Aerostream/tree/main"
+  },
+  {
+    id: "p3",
+    title: "Aether Carbon Unified Sync Matrix",
+    category: "Hackathon Winner",
+    description: "Designed and engineered this specialized synchronization application exclusively for the Prompt Wars hackathon hosted by Hack2skill and Google. <br><br><a href=\"https://www.linkedin.com/posts/vibhath-t-k-360b2525a_promptwars-hack2skill-googlefordevelopers-ugcPost-7474357143165390848-TXll/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAD_h6bgB0VdAMlYfvDs6G0DYlvJekttGrIk\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: var(--accent-red); font-weight: bold; text-decoration: underline; display: inline-flex; align-items: center; gap: 4px;\">LinkedIn Post <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:12px; height:12px;\"><polyline points=\"15 3 21 3 21 9\"></polyline><line x1=\"10\" y1=\"14\" x2=\"21\" y2=\"3\"></line></svg></a>",
+    tags: "Sync Engine, Data Science, Prompt Wars",
+    link: "https://vibhathcross.github.io/unified-carbon-data/"
+  },
+  {
+    id: "p4",
+    title: "VidZone Video Editor",
+    category: "Desktop Utility",
+    description: "Deployed a bespoke desktop video editing utility optimized to streamline content creation workflows for YouTube, automating rendering tasks.",
+    tags: "Video Processing, Automation, Electron",
+    link: "https://github.com/Vibhathcross/VidZone-Video-Editor"
+  },
+  {
+    id: "p5",
+    title: "Thripura Press Digital Platform",
+    category: "Full-Stack Web",
+    description: "Engineered a highly functional business website, utilizing AI-augmented development methodologies to drive clean UI/UX paradigms, digitalize operations, and manage client inquiries.",
+    tags: "AI-Augmented, HTML5, CSS3, JS",
+    link: "https://vibhathcross.github.io/Thripura-Buisiness-Webpage/"
+  },
+  {
+    id: "p6",
+    title: "Personal Interactive Portfolio",
+    category: "Frontend Portfolio",
+    description: "Leveraged AI-driven development for rapid UI/UX design and frontend implementation to build a dynamic, responsive single-page web portfolio showcasing ongoing software architectures.",
+    tags: "Three.js, Neomorphism, Vanilla JS, CMS",
+    link: "https://vibhathcross.github.io/Portfolio/"
   }
 ];
 
@@ -525,17 +557,19 @@ function initCustomScrollNav() {
   const navBtns = document.querySelectorAll('.nav-btn');
   if (!scrollBead || !markers.length) return;
 
-  const sections = ['hero', 'capabilities', 'projects', 'motivation'];
+  const sections = ['hero', 'capabilities', 'projects', 'credentials', 'motivation'];
   const sectionNames = {
     'hero': 'Home',
     'capabilities': 'Capabilities',
     'projects': 'Projects',
+    'credentials': 'Credentials',
     'motivation': 'Connect'
   };
   const markerPositions = {
     'hero': 0,
-    'capabilities': 33.33,
-    'projects': 66.66,
+    'capabilities': 25,
+    'projects': 50,
+    'credentials': 75,
     'motivation': 100
   };
   const threshold = 4.0; // Trigger threshold percentage
