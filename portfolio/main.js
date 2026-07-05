@@ -90,7 +90,7 @@ const fallbackCapabilities = [
 ];
 
 let credentialsData = [];
-let resumeBlobUrl = '/resume.pdf'; // default fallback
+let resumeBlobUrl = './resume.pdf'; // default fallback
 
 const fallbackCredentials = [
   {
