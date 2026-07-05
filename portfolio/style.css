@@ -1803,77 +1803,31 @@ body.admin-active .add-project-card {
   text-align: justify;
 }
 
-/* Technical Skill Matrix styling */
-.skills-matrix-container {
-  margin-top: 70px;
-  width: 100%;
-  max-width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 40px;
-  background-color: var(--bg-color);
-  box-shadow: var(--neo-raised-shadow);
-  border-radius: 30px;
-  box-sizing: border-box;
-  text-align: center;
+/* Capability Details Custom Bullet Lists */
+.capability-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0 0 0;
 }
 
-.skills-matrix-title {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--accent-red);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 35px;
-}
-
-.skills-matrix-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
-}
-
-.skills-category-card {
-  background-color: var(--bg-color);
-  box-shadow: var(--neo-inset-shadow);
-  border-radius: 20px;
-  padding: 25px 20px;
+.capability-content li {
+  position: relative;
+  font-size: 1.05rem;
+  padding-left: 20px;
+  margin-bottom: 12px;
+  color: var(--text-color);
+  line-height: 1.5;
   text-align: left;
-  box-sizing: border-box;
 }
 
-.skills-category-card h4 {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--text-color);
-  margin-bottom: 18px;
-  border-bottom: 2px solid rgba(211, 47, 47, 0.15);
-  padding-bottom: 8px;
-}
-
-.skills-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.skill-badge {
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-color);
-  background-color: var(--bg-color);
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.05), -2px -2px 5px rgba(255,255,255,0.8);
-  border-radius: 8px;
-  padding: 6px 12px;
-  transition: all 0.3s;
-}
-
-.skill-badge:hover {
-  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.08), inset -1px -1px 3px rgba(255,255,255,0.8);
+.capability-content li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
   color: var(--accent-red);
+  font-weight: 900;
+  font-size: 1.2rem;
+  top: -1px;
 }
 
 /* Education & Credentials Section styling */
@@ -2019,11 +1973,8 @@ body.admin-active .add-project-card {
   color: var(--text-color);
 }
 
-/* Responsive skill matrix and credentials */
+/* Responsive credentials */
 @media (max-width: 992px) {
-  .skills-matrix-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
   .credentials-content-grid {
     grid-template-columns: 1fr;
     gap: 30px;
@@ -2031,12 +1982,6 @@ body.admin-active .add-project-card {
 }
 
 @media (max-width: 576px) {
-  .skills-matrix-grid {
-    grid-template-columns: 1fr;
-  }
-  .skills-matrix-container {
-    padding: 25px 15px;
-  }
   .education-card, .certifications-card {
     padding: 25px 20px;
   }

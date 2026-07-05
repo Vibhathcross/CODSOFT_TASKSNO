@@ -61,24 +61,31 @@ const fallbackProjects = [
 const fallbackCapabilities = [
   {
     id: "c1",
-    title: "Systems Programming",
-    label: "SYS",
-    percentage: 85,
-    description: "Proficient in C and Linux system calls. Focused on low-level OS architecture, process control (fork/exec), and deterministic memory management algorithms."
+    title: "Languages & Frameworks",
+    label: "L&F",
+    percentage: 90,
+    description: "<ul><li>C</li><li>Python</li><li>HTML5 / CSS3</li><li>JavaScript / TypeScript</li><li>React JS</li><li>Tailwind CSS</li></ul>"
   },
   {
     id: "c2",
-    title: "Data Science & ML",
-    label: "DS",
-    percentage: 75,
-    description: "Mathematical modeling and implementation of rule-based classification, clustering methodologies (KNN, Ward's Linkage), and dimensionality reduction via Principal Component Analysis (PCA)."
+    title: "Core CS Foundations",
+    label: "CS",
+    percentage: 90,
+    description: "<ul><li>Data Structures & Algorithms (DSA)</li><li>Operating Systems (OS)</li><li>Computer Networking</li></ul>"
   },
   {
     id: "c3",
-    title: "UI & Architecture",
-    label: "ARC",
-    percentage: 80,
-    description: "Designing high-performance user interfaces in React, coupled with robust application layer engineering, network socket optimization, and hybrid cloud integration."
+    title: "Engineering Specialties",
+    label: "ENG",
+    percentage: 90,
+    description: "<ul><li>OS Automation</li><li>UI/UX Design</li><li>Data Science</li><li>Full-Stack App Development</li></ul>"
+  },
+  {
+    id: "c4",
+    title: "Methodologies",
+    label: "MET",
+    percentage: 90,
+    description: "<ul><li>AI-Augmented Development (UI/UX & App Dev)</li><li>AI-Assisted Rapid Prototyping</li><li>Prompt Engineering</li><li>Generative AI Orchestration</li></ul>"
   }
 ];
 
