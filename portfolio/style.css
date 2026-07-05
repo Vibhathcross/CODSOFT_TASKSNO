@@ -768,10 +768,16 @@ section {
   box-sizing: border-box;
 }
 
-.project-card:hover,
 .project-card.active {
   z-index: 100 !important;
   transform: scale(1.05) rotateZ(0deg) !important;
+}
+
+@media (hover: hover) {
+  .project-card:hover {
+    z-index: 100 !important;
+    transform: scale(1.05) rotateZ(0deg) !important;
+  }
 }
 
 .layton-all {
@@ -782,9 +788,14 @@ section {
   transform-style: preserve-3d;
 }
 
-.project-card:hover .layton-all,
 .project-card.active .layton-all {
   transform: rotateY(180deg) rotate(90deg);
+}
+
+@media (hover: hover) {
+  .project-card:hover .layton-all {
+    transform: rotateY(180deg) rotate(90deg);
+  }
 }
 
 .layton-front,
@@ -1775,7 +1786,6 @@ body.admin-active .add-project-card {
     box-shadow: none !important;
   }
 
-  .project-card:hover,
   .project-card.active {
     transform: scale(1.03) !important;
     box-shadow: none !important;

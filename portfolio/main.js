@@ -792,10 +792,10 @@ function renderProjects() {
 
   let html = projectsData.map((proj, idx) => {
     // Calculate card stack layout offsets
-    const topOffset = -40 + idx * 22;
-    const leftOffset = -40 + idx * 22;
+    const topOffset = -50 + idx * 20;
+    const leftOffset = -50 + idx * 20;
     const zIndex = idx + 1;
-    const rotateDeg = -8 + idx * 2.5;
+    const rotateDeg = -6;
 
     // Parse comma-separated tags
     const tagArray = typeof proj.tags === 'string' ? proj.tags.split(',') : (Array.isArray(proj.tags) ? proj.tags : []);
@@ -846,10 +846,10 @@ function renderProjects() {
 
   if (isAdminMode) {
     const idx = projectsData.length;
-    const topOffset = -40 + idx * 22;
-    const leftOffset = -40 + idx * 22;
+    const topOffset = -50 + idx * 20;
+    const leftOffset = -50 + idx * 20;
     const zIndex = idx + 1;
-    const rotateDeg = -8 + idx * 2.5;
+    const rotateDeg = -6;
     
     html += `
       <div class="project-card add-project-card-stack" id="add-project-trigger" style="top: ${topOffset}px; left: ${leftOffset}px; z-index: ${zIndex}; transform: rotateZ(${rotateDeg}deg);">
