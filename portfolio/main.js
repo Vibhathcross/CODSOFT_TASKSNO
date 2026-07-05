@@ -750,20 +750,15 @@ function renderCapabilities() {
 
         <!-- Details Content (revealed on hover/active) -->
         <div class="capability-details-wrapper">
-          <!-- Admin Controls overlay -->
-          <div class="admin-controls">
-            <button class="admin-edit-btn edit-cap-trigger" data-id="${cap.id}" aria-label="Edit Capability">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-              </svg>
-            </button>
-          </div>
-
           <h3 class="capability-expanded-title">${cap.title}</h3>
           
           <div class="capability-content">
             <p>${cap.description}</p>
+            ${isAdminMode ? `
+              <div style="text-align: center; margin-top: 15px;">
+                <span class="admin-edit-link edit-cap-trigger" data-id="${cap.id}" style="font-size: 0.75rem; text-decoration: underline; cursor: pointer; color: var(--accent-red); font-weight: 600; font-family: var(--font-display); letter-spacing: 0.5px; text-transform: uppercase;">EDIT DETAILS</span>
+              </div>
+            ` : ''}
           </div>
         </div>
       </div>
@@ -797,16 +792,6 @@ function renderProjects() {
     
     return `
       <div class="project-card" id="project-${proj.id}">
-        <!-- Admin Controls overlay (fixed on front, hides when opened) -->
-        <div class="admin-controls" style="position: absolute; top: 18px; right: 18px; display: inline-flex; z-index: 50;">
-          <button class="admin-edit-btn edit-project-trigger" data-id="${proj.id}" aria-label="Edit Project">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-          </button>
-        </div>
-
         <div class="layton-all">
           <!-- Front of the Layton Card (Title instead of Hat) -->
           <div class="layton-front">
@@ -825,12 +810,17 @@ function renderProjects() {
               <div class="layton-back-tags">
                 ${tagsHTML}
               </div>
-              ${proj.link ? `
-                <a href="${proj.link}" target="_blank" rel="noopener noreferrer" class="layton-back-btn">
-                  <span>VIEW SYSTEM</span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:11px; height:11px; stroke: currentColor;"><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                </a>
-              ` : ''}
+              <div class="layton-back-actions" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: auto;">
+                ${proj.link ? `
+                  <a href="${proj.link}" target="_blank" rel="noopener noreferrer" class="layton-back-btn">
+                    <span>VIEW SYSTEM</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:11px; height:11px; stroke: currentColor;"><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  </a>
+                ` : ''}
+                ${isAdminMode ? `
+                  <span class="admin-edit-link edit-project-trigger" data-id="${proj.id}" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-decoration: underline; cursor: pointer; color: var(--accent-red); font-family: var(--font-display);">EDIT</span>
+                ` : ''}
+              </div>
             </div>
           </div>
         </div>
@@ -861,7 +851,7 @@ function renderProjects() {
   cards.forEach(card => {
     card.addEventListener('click', (e) => {
       // Do not toggle active status if clicking details action links, buttons, or admin edit controls
-      if (e.target.closest('.admin-edit-btn') || e.target.closest('#add-project-trigger') || e.target.closest('.layton-back-btn') || e.target.closest('a')) {
+      if (e.target.closest('.admin-edit-btn') || e.target.closest('.admin-edit-link') || e.target.closest('#add-project-trigger') || e.target.closest('.layton-back-btn') || e.target.closest('a')) {
         return;
       }
       
