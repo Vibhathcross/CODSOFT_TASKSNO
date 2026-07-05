@@ -358,26 +358,25 @@ function initThreeBG() {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const scrollPercent = maxScroll > 0 ? Math.min(Math.max(currentScrollY / maxScroll, 0), 1) : 0;
       
-      const leftOpacity = 0.55 + 0.4 * Math.sin(scrollPercent * Math.PI * 1.5);
-      const rightOpacity = 0.55 + 0.4 * Math.cos(scrollPercent * Math.PI * 1.5);
+      // Calculate vertical position of the light wave (oscillates between 5% and 95% height)
+      const glowYLeft = 50 + Math.sin(scrollPercent * Math.PI * 5) * 45;
+      const glowYRight = 50 + Math.cos(scrollPercent * Math.PI * 5) * 45;
       
-      const leftY = -15 + scrollPercent * -20;
-      const rightY = -35 + scrollPercent * 20;
+      // Set background radial gradients with moving vertical center points
+      glowLeft.style.background = `radial-gradient(circle at -20% ${glowYLeft}%, rgba(211, 47, 47, 0.8) 0%, rgba(211, 47, 47, 0.22) 40%, rgba(211, 47, 47, 0) 100%)`;
+      glowRight.style.background = `radial-gradient(circle at 120% ${glowYRight}%, rgba(211, 47, 47, 0.8) 0%, rgba(211, 47, 47, 0.22) 40%, rgba(211, 47, 47, 0) 100%)`;
 
-      // Add high-frequency waves to the horizontal translation and scale
-      const waveFreq = 10; // number of wave peaks over scroll
-      const waveAmp = 25;   // horizontal movement amplitude in pixels
-      const waveLeft = Math.sin(scrollPercent * Math.PI * waveFreq) * waveAmp;
-      const waveRight = Math.cos(scrollPercent * Math.PI * waveFreq) * waveAmp;
+      // Opacity breathing
+      const leftOpacity = 0.6 + 0.35 * Math.sin(scrollPercent * Math.PI * 1.5);
+      const rightOpacity = 0.6 + 0.35 * Math.cos(scrollPercent * Math.PI * 1.5);
+      glowLeft.style.opacity = Math.max(0.4, Math.min(leftOpacity, 0.95));
+      glowRight.style.opacity = Math.max(0.4, Math.min(rightOpacity, 0.95));
 
-      const scaleLeft = 1.05 + scrollPercent * 0.12 + Math.sin(scrollPercent * Math.PI * 6) * 0.08;
-      const scaleRight = 1.05 + (1 - scrollPercent) * 0.12 + Math.cos(scrollPercent * Math.PI * 6) * 0.08;
-
-      glowLeft.style.opacity = Math.max(0.35, Math.min(leftOpacity, 0.95));
-      glowLeft.style.transform = `translateY(${leftY}vh) translateX(${waveLeft}px) scaleX(${scaleLeft})`;
-
-      glowRight.style.opacity = Math.max(0.35, Math.min(rightOpacity, 0.95));
-      glowRight.style.transform = `translateY(${rightY}vh) translateX(${waveRight}px) scaleX(${scaleRight})`;
+      // Horizontal wave translation
+      const waveLeft = Math.sin(scrollPercent * Math.PI * 8) * 10;
+      const waveRight = Math.cos(scrollPercent * Math.PI * 8) * 10;
+      glowLeft.style.transform = `translateX(${waveLeft}px)`;
+      glowRight.style.transform = `translateX(${waveRight}px)`;
     }
 
     renderer.render(scene, camera);
