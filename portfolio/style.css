@@ -750,162 +750,188 @@ section {
   }
 }
 
-/* Page 3: Technical Projects (Stacked Deck) */
+/* Page 3: Technical Projects (Professor Layton Red Theme) */
 .projects-grid {
   position: relative;
-  width: 320px;
-  height: 240px;
-  margin: 120px auto 160px auto;
+  width: 270px;
+  height: 380px;
+  margin: 100px auto 120px auto;
+  perspective: 1500px;
 }
 
 .project-card {
   position: absolute;
-  width: 320px;
-  height: 240px;
-  border-radius: 20px;
-  background: #FFFFFF;
-  border: 2px solid var(--accent-red);
-  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.05), -4px -4px 15px rgba(255, 255, 255, 0.9);
-  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  overflow: hidden;
-  padding: 25px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
+  width: 270px;
+  height: 380px;
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   cursor: pointer;
   box-sizing: border-box;
 }
 
-/* Card Hover States */
 .project-card:hover,
 .project-card.active {
   z-index: 100 !important;
-  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) !important;
-  box-shadow: 8px 8px 25px rgba(0, 0, 0, 0.12), -8px -8px 25px rgba(255, 255, 255, 1);
+  transform: scale(1.05) rotateZ(0deg) !important;
 }
 
-/* Inside card text elements */
-.project-badge {
-  font-family: var(--font-display);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--accent-red);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.project-title {
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: var(--text-color);
-  line-height: 1.35;
-  text-align: left;
-  margin-bottom: 10px;
-}
-
-.project-card-hint {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: auto;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* Card 3D Flap (cardDetails) */
-.project-card-details {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 70%;
+.layton-all {
+  width: 100%;
   height: 100%;
-  padding: 20px;
+  position: relative;
+  transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+  transform-style: preserve-3d;
+}
+
+.project-card:hover .layton-all,
+.project-card.active .layton-all {
+  transform: rotateY(180deg) rotate(90deg);
+}
+
+.layton-front,
+.layton-back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 3;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  box-sizing: border-box;
+  border: solid 10px #7f1616; /* Deep Dark Red Border */
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.12);
+  border-radius: 14px;
+}
+
+.layton-front {
+  background-color: #fffafb;
+  box-shadow: inset 0px 0px 35px rgba(127, 22, 22, 0.25), 0px 4px 15px rgba(0, 0, 0, 0.12);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.layton-back {
+  transform: rotateY(180deg);
+  background-color: #fffefe;
+  box-shadow: inset 0px 0px 30px rgba(127, 22, 22, 0.15), 0px 4px 15px rgba(0, 0, 0, 0.12);
+  justify-content: center;
+  align-items: center;
+}
+
+.layton-icon {
+  width: 110px;
+  height: 90px;
+  display: flex;
+  justify-content: center;
+  box-shadow: inset 0px -8px #7f1616;
+  margin-bottom: 25px;
+}
+
+.layton-hat {
+  width: 68px;
+  height: 82px;
+  background-color: #7f1616;
+  box-shadow: inset 0px -15px var(--accent-red);
+  border-radius: 4px 4px 0 0;
+}
+
+.layton-text p {
+  color: #7f1616;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 26px;
+  height: 1.1em;
+  margin: 3px 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.layton-back-text-box {
+  color: #7f1616;
+  position: absolute;
+  transform: rotate(90deg);
+  width: 330px; /* height of card when rotated */
+  height: 220px; /* width of card when rotated */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-start;
-  background: rgba(33, 33, 33, 0.96);
-  border-right: 2px solid var(--accent-red);
-  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  transform-origin: left;
-  transform: perspective(2000px) rotateY(-90deg);
-  z-index: 10;
   box-sizing: border-box;
-  
-  /* Scroll properties for overflow content */
-  overflow-y: auto;
-  scrollbar-width: thin;
-  -webkit-overflow-scrolling: touch;
-}
-
-.project-card-details::-webkit-scrollbar {
-  width: 4px;
-}
-
-.project-card-details::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.project-card-details::-webkit-scrollbar-thumb {
-  background-color: var(--accent-red);
-  border-radius: 2px;
-}
-
-.project-card:hover .project-card-details,
-.project-card.active .project-card-details {
-  transform: perspective(2000px) rotateY(0deg);
-}
-
-/* Details content styling */
-.project-details-header {
-  width: 100%;
+  padding: 10px;
   text-align: left;
 }
 
-.project-details-desc {
-  font-size: 0.8rem;
-  line-height: 1.45;
-  color: #E0E0E0;
-  margin-bottom: 12px;
+.layton-back-text-box h4 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #7f1616;
+  margin: 0 0 8px 0;
+  border-bottom: 2.5px solid rgba(127, 22, 22, 0.15);
+  padding-bottom: 5px;
+  width: 100%;
+  text-transform: uppercase;
 }
 
-.project-details-tags {
+.layton-back-text-box p {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #4a4a4a;
+  margin: 0 0 12px 0;
+}
+
+.layton-back-text-box p a {
+  color: var(--accent-red);
+  font-weight: 800;
+  text-decoration: underline;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.layton-back-text-box p a:hover {
+  color: #FF1744;
+}
+
+.layton-back-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  margin-bottom: 12px;
 }
 
-.tag {
-  font-size: 0.7rem;
+.layton-back-tags .tag {
+  font-size: 0.65rem;
   padding: 3px 8px;
-  border-radius: 6px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #FF5A91;
-  font-weight: 600;
+  border-radius: 5px;
+  background-color: rgba(127, 22, 22, 0.08);
+  color: #7f1616;
+  font-weight: 700;
+  border: 1px solid rgba(127, 22, 22, 0.12);
 }
 
-/* Button inside details */
-.project-details-button {
-  padding: 6px 12px;
-  border-radius: 20px;
-  background-color: var(--accent-red);
-  color: #FFFFFF;
+.layton-back-btn {
   font-family: var(--font-display);
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 900;
   text-decoration: none;
+  color: #ffffff !important;
+  background-color: var(--accent-red);
+  padding: 7px 14px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1), -2px -2px 5px rgba(255,255,255,0.7);
+  transition: all 0.3s;
+  align-self: flex-start;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  transition: background-color 0.3s;
+  gap: 5px;
+  border: none;
+  cursor: pointer;
 }
 
-.project-details-button:hover {
+.layton-back-btn:hover {
   background-color: #FF1744;
+  transform: scale(1.05);
 }
 
 /* Neomorphic Add Project Card in Stack */
@@ -1729,9 +1755,11 @@ body.admin-active .add-project-card {
     flex-direction: column;
     align-items: center;
     width: 100%;
+    max-width: 270px;
     height: auto;
     margin: 40px auto;
     gap: 35px;
+    perspective: 1500px;
   }
   
   .project-card {
@@ -1739,46 +1767,67 @@ body.admin-active .add-project-card {
     top: 0 !important;
     left: 0 !important;
     transform: none !important;
-    width: 100%;
-    max-width: 320px;
-    height: 95px; /* Collapsed height on mobile */
-    padding: 18px 22px;
+    width: 220px !important;
+    height: 310px !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
   }
-  
+
+  .project-card:hover,
   .project-card.active {
-    height: 380px; /* Expanded height on mobile */
+    transform: scale(1.03) !important;
+    box-shadow: none !important;
   }
-  
-  /* Hide hover hint on mobile */
-  .project-card-hint {
-    display: none !important;
+
+  .layton-front,
+  .layton-back {
+    border-width: 8px !important;
   }
-  
-  /* Adjust title margins for mobile collapsed state */
-  .project-title {
-    font-size: 1.15rem;
-    margin-bottom: 0;
+
+  .layton-icon {
+    width: 90px !important;
+    height: 75px !important;
+    box-shadow: inset 0px -6px #7f1616 !important;
+    margin-bottom: 15px !important;
   }
-  
-  .project-badge {
-    margin-bottom: 6px;
+
+  .layton-hat {
+    width: 54px !important;
+    height: 68px !important;
+    box-shadow: inset 0px -12px var(--accent-red) !important;
   }
-  
-  /* Left details flap covers full width on mobile active */
-  .project-card-details {
-    width: 100% !important;
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(0.95) translateY(10px);
-    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
-    border-right: none;
-    border-bottom: 2px solid var(--accent-red);
+
+  .layton-text p {
+    font-size: 20px !important;
   }
-  
-  .project-card.active .project-card-details {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1) translateY(0);
+
+  .layton-back-text-box {
+    width: 270px !important;
+    height: 180px !important;
+    padding: 5px !important;
+  }
+
+  .layton-back-text-box h4 {
+    font-size: 0.9rem !important;
+    margin-bottom: 6px !important;
+  }
+
+  .layton-back-text-box p {
+    font-size: 0.72rem !important;
+    line-height: 1.4 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .layton-back-tags .tag {
+    font-size: 0.6rem !important;
+    padding: 2px 6px !important;
+  }
+
+  .layton-back-btn {
+    font-size: 0.65rem !important;
+    padding: 6px 12px !important;
   }
 }
 

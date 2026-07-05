@@ -803,11 +803,20 @@ function renderProjects() {
     
     return `
       <div class="project-card" style="top: ${topOffset}px; left: ${leftOffset}px; z-index: ${zIndex}; transform: rotateZ(${rotateDeg}deg);" id="project-${proj.id}">
-        <!-- Left 3D details flap (cardDetails) -->
-        <div class="project-card-details">
-          <div class="project-details-header">
+        <div class="layton-all">
+          <!-- Front of the Layton Card -->
+          <div class="layton-front">
+            <div class="layton-icon">
+              <div class="layton-hat"></div>
+            </div>
+            <div class="layton-text"><p>PROJECT</p></div>
+            <div class="layton-text"><p>00${idx + 1}</p></div>
+          </div>
+          
+          <!-- Back of the Layton Card -->
+          <div class="layton-back">
             <!-- Admin Controls overlay -->
-            <div class="admin-controls" style="position: relative; top: 0; right: 0; display: inline-flex; margin-bottom: 10px; z-index: 20;">
+            <div class="admin-controls" style="position: absolute; top: 10px; right: 10px; display: inline-flex; z-index: 50;">
               <button class="admin-edit-btn edit-project-trigger" data-id="${proj.id}" aria-label="Edit Project">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -815,26 +824,21 @@ function renderProjects() {
                 </svg>
               </button>
             </div>
-            <p class="project-details-desc">${proj.description}</p>
-            <div class="project-details-tags">
-              ${tagsHTML}
+            
+            <div class="layton-back-text-box">
+              <h4>${proj.title}</h4>
+              <p>${proj.description}</p>
+              <div class="layton-back-tags">
+                ${tagsHTML}
+              </div>
+              ${proj.link ? `
+                <a href="${proj.link}" target="_blank" rel="noopener noreferrer" class="layton-back-btn">
+                  <span>VIEW SYSTEM</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:11px; height:11px; stroke: currentColor;"><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+              ` : ''}
             </div>
           </div>
-
-          ${proj.link ? `
-            <a href="${proj.link}" target="_blank" rel="noopener noreferrer" class="project-details-button">
-              <span>View System</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px; height:12px;"><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-            </a>
-          ` : ''}
-        </div>
-
-        <!-- Main card body content (always visible) -->
-        <div class="project-badge">${proj.category || 'Technical System'}</div>
-        <h3 class="project-title">${proj.title}</h3>
-        <div class="project-card-hint">
-          <span>Hover to open</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px; height:12px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </div>
       </div>
     `;
@@ -849,7 +853,15 @@ function renderProjects() {
     
     html += `
       <div class="project-card add-project-card-stack" id="add-project-trigger" style="top: ${topOffset}px; left: ${leftOffset}px; z-index: ${zIndex}; transform: rotateZ(${rotateDeg}deg);">
-        <span>+ Add Project</span>
+        <div class="layton-all">
+          <div class="layton-front" style="border-style: dashed; border-color: var(--accent-red); background-color: rgba(211, 47, 47, 0.01); box-shadow: none;">
+            <div class="layton-icon" style="box-shadow: inset 0px -8px var(--accent-red);">
+              <div class="layton-hat" style="background-color: var(--accent-red); box-shadow: inset 0px -15px #FFC107;"></div>
+            </div>
+            <div class="layton-text"><p>ADD NEW</p></div>
+            <div class="layton-text"><p>PROJECT</p></div>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -860,8 +872,8 @@ function renderProjects() {
   const cards = container.querySelectorAll('.project-card');
   cards.forEach(card => {
     card.addEventListener('click', (e) => {
-      // Do not toggle active status if clicking details action links or admin edit controls
-      if (e.target.closest('.admin-edit-btn') || e.target.closest('#add-project-trigger') || e.target.closest('.project-details-button')) {
+      // Do not toggle active status if clicking details action links, buttons, or admin edit controls
+      if (e.target.closest('.admin-edit-btn') || e.target.closest('#add-project-trigger') || e.target.closest('.layton-back-btn') || e.target.closest('a')) {
         return;
       }
       
