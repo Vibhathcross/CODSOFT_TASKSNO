@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STOMP | Modern Neo-Brutalist Shoe E-Commerce</title>
+    <link rel="stylesheet" href="style.css?v=7">
+</head>
+<body>
+
+    <!-- BACKGROUND FLOATING SHAPES -->
+    <div class="decorations" id="decorations-container">
+        <!-- Will be dynamically populated by JS, plus static ones for fallback -->
+        <div class="shape shape-star spin-slow" style="top: 12%; left: 8%;"></div>
+        <div class="shape shape-circle float-slow" style="top: 55%; left: 3%;"></div>
+        <div class="shape shape-triangle float-slow" style="top: 22%; right: 6%;"></div>
+        <div class="shape shape-star spin-slow" style="top: 72%; right: 10%;"></div>
+    </div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="reveal-element">
+        <a href="#" class="logo" id="site-logo">
+            <svg class="logo-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px; fill: var(--accent-orange); stroke: var(--black); stroke-width: 2.5px; filter: drop-shadow(2px 2px 0px var(--black)); margin-right: 8px;">
+                <rect x="2" y="2" width="28" height="28" rx="4" fill="var(--accent-yellow)" stroke="var(--black)" stroke-width="2.5" />
+                <rect x="8" y="7" width="16" height="4" rx="1" fill="var(--black)" />
+                <rect x="10" y="13" width="12" height="4" rx="1" fill="var(--black)" />
+                <rect x="11" y="19" width="10" height="4" rx="1" fill="var(--black)" />
+                <circle cx="16" cy="25" r="2" fill="var(--black)" />
+            </svg>
+            STOMP<span>.</span>
+        </a>
+        <nav>
+            <a href="#hero" class="nav-link">Home</a>
+            <a href="#manifesto" class="nav-link">Manifesto</a>
+            <a href="#boots" class="nav-link">Boots</a>
+            <a href="#anatomy" class="nav-link">Anatomy</a>
+            <a href="#shop" class="nav-link">Shop</a>
+            <a href="#reviews" class="nav-link">Reviews</a>
+        </nav>
+        <div class="header-actions">
+            <button class="neo-btn neo-btn-yellow" id="login-nav-btn">
+                Sign In
+            </button>
+            <div class="cart-icon-wrapper" id="cart-btn">
+                <button class="neo-btn neo-btn-black">
+                    Cart
+                </button>
+                <div class="cart-badge" id="cart-count">0</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="hero">
+        <div class="hero-content reveal-element">
+            <span class="neo-badge neo-badge-pink hero-tagline">DROP 01 // LIMITLESS COMFORT</span>
+            <h1 class="hero-title" id="hero-title-text">
+                STOMP THE<br>
+                <span id="colored-hero-text">STREETS</span>
+            </h1>
+            <p class="hero-desc">
+                High-end streetwear engineered for the bold. Heavy-duty construction meets premium responsive cushioning. Outrageous design, unapologetic style.
+            </p>
+            <div class="hero-buttons">
+                <button class="neo-btn neo-btn-orange" id="hero-cta-buy">Shop the Drop</button>
+                <button class="neo-btn" id="hero-cta-explore">Learn Tech</button>
+            </div>
+        </div>
+
+        <div class="hero-showcase reveal-element">
+            <!-- White card container for the realistic shoe product shot -->
+            <div class="neo-card rotate-left" style="width: 100%; max-width: 400px; text-align: center; overflow: hidden; background-color: var(--white); box-shadow: var(--shadow-hover);">
+                <div class="neo-badge neo-badge-orange" id="hero-shoe-badge" style="position: absolute; top: 15px; left: 15px; z-index: 20;">NEW ARRIVAL</div>
+                <div class="hero-canvas">
+                    <img src="assets/sneaker_orange.png" alt="STOMP Sneaker Showcase" class="sneaker-display" id="hero-sneaker-img">
+                </div>
+            </div>
+
+            <!-- Shoe Customizer/Switcher -->
+            <div class="neo-card shoe-selector-card">
+                <h4 class="selector-title">Select Colorway</h4>
+                <div class="selector-options">
+                    <div class="selector-dot dot-orange active" data-color="orange" title="Neon Orange"></div>
+                    <div class="selector-dot dot-blue" data-color="blue" title="Electric Blue"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INFINITE TEXT TICKER MARQUEE -->
+    <div class="marquee-container reveal-element">
+        <div class="marquee-content">
+            STOMP // HARDCORE SOLE // BOLD TYPOGRAPHY // NEO-BRUTALISM // DROP 01 // LIMITLESS STEEZ // STREET READY // COMFORT MAXIMA // STOMP // HARDCORE SOLE // BOLD TYPOGRAPHY // NEO-BRUTALISM // DROP 01 // LIMITLESS STEEZ // STREET READY // COMFORT MAXIMA //
+        </div>
+    </div>
+
+    <!-- DESIGN MANIFESTO SECTION -->
+    <section class="manifesto-section" id="manifesto">
+        <div class="reveal-element">
+            <span class="neo-badge neo-badge-orange" style="margin-bottom: 20px;">Our Creed</span>
+            <h2 class="manifesto-title">RAW. UNPOLISHED.<br>POWERFUL.</h2>
+            <p style="font-size: 17px; line-height: 1.6; opacity: 0.95;">
+                Neo-brutalist style is not about decoration. It is about honesty. We stripped away the soft gradients, glossy surfaces, and corporate curves of modern sneaker culture to design something physically and visually massive. A product that occupies space with intent, outlined in heavy solid borders and hard shadows.
+            </p>
+        </div>
+        <div class="reveal-element">
+            <div class="manifesto-card">
+                <img src="assets/sneaker_box.png" alt="STOMP Box Packaging Design" class="manifesto-img">
+                <span class="neo-badge neo-badge-yellow" style="position: absolute; bottom: -20px; right: 15px; z-index: 10;">THE PACKAGING Drop 01</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED BOOT GALLERY SECTION -->
+    <section class="boot-section" id="boots">
+        <div class="section-header reveal-element">
+            <div>
+                <span class="neo-badge neo-badge-pink" style="margin-bottom: 12px;">Featured Release</span>
+                <h2 class="section-title" style="text-shadow: 3px 3px 0px var(--accent-orange);">STOMP UTILITY BOOT</h2>
+            </div>
+            <p class="section-subtitle">
+                Tactical combat engineering meeting high-clout streetwear aesthetic. Built with full-grain leather and reflective high-vis linings.
+            </p>
+        </div>
+
+        <div class="boot-gallery">
+            <!-- Angle 1: Profile View -->
+            <div class="boot-card rotate-left reveal-element">
+                <div class="boot-img-container">
+                    <span class="neo-badge neo-badge-orange" style="position: absolute; top: 10px; left: 10px; z-index: 10;">ANGLE 01</span>
+                    <img src="assets/boot_side.png" alt="STOMP Boot Side Profile" class="boot-card-img">
+                </div>
+                <div class="boot-desc">
+                    <h3 class="boot-spec-title">Side Profile</h3>
+                    <p class="boot-spec-detail">
+                        Features lightweight full-grain combat leather, double-stitched reinforcements, weather-sealed gussets, and quick-lacing metal speed loops.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Angle 2: Mirrored Profile (Simulated Reverse Angle) -->
+            <div class="boot-card rotate-right reveal-element" style="transition-delay: 0.05s;">
+                <div class="boot-img-container">
+                    <span class="neo-badge neo-badge-blue" style="position: absolute; top: 10px; left: 10px; z-index: 10;">ANGLE 02</span>
+                    <!-- Mirrored image -->
+                    <img src="assets/boot_side.png" alt="STOMP Boot Medial View" class="boot-card-img">
+                </div>
+                <div class="boot-desc">
+                    <h3 class="boot-spec-title">Medial Profile</h3>
+                    <p class="boot-spec-detail">
+                        Highlights the high-wall rubber protective mudguard, heavy-duty interior arch zipper, and ergonomic heel pull-tab.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Angle 3: Detail View -->
+            <div class="boot-card rotate-left reveal-element" style="transition-delay: 0.1s;">
+                <div class="boot-img-container">
+                    <span class="neo-badge neo-badge-pink" style="position: absolute; top: 10px; left: 10px; z-index: 10;">DETAIL VIEW</span>
+                    <img src="assets/boot_side.png" alt="STOMP Boot Detail" class="boot-card-img">
+                </div>
+                <div class="boot-desc">
+                    <h3 class="boot-spec-title">Collar Detail</h3>
+                    <p class="boot-spec-detail">
+                        Deep look at the ultra-durable padded ballistic nylon ankle collar, high-vis orange tongue webbing, and rustproof hardware details.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ASYMMETRIC TECH BREAKDOWN -->
+    <section class="tech-section" id="tech">
+        <div class="tech-left-col reveal-element">
+            <div class="tech-lifestyle-card">
+                <img src="assets/sneaker_lifestyle.png" alt="STOMP Streetwear Lifestyle" class="tech-lifestyle-img">
+                <span class="neo-badge neo-badge-pink tech-badge-overlay">STREET TESTED. BOLD APPROVED.</span>
+            </div>
+        </div>
+        
+        <div class="tech-right-col reveal-element">
+            <div>
+                <span class="neo-badge neo-badge-blue" style="margin-bottom: 15px;">Engineering</span>
+                <h2 class="tech-heading">REDEFINING THE SOLE</h2>
+                <p class="tech-description">
+                    STOMP sneakers are built to endure. Integrating a triple-density vulcanized rubber chassis with multi-point shock dispersion. We don't make shoes for walks; we build them for stomping.
+                </p>
+            </div>
+            
+            <div class="sole-tech-card">
+                <img src="assets/sneaker_sole.png" alt="STOMP Sole Tech Details" class="sole-tech-img">
+                <div>
+                    <h3 class="sole-tech-title">Tread-Active Outsole</h3>
+                    <p class="sole-tech-desc">
+                        Asymmetric grip tread engineered for multi-surface traction, wrapped in high-walled defensive rubber piping to repel water and street debris.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ANATOMY INTERACTIVE TECH SECTION -->
+    <section class="anatomy-section" id="anatomy">
+        <div class="section-header reveal-element" style="margin-bottom: 40px; text-align: center; display: block;">
+            <span class="neo-badge neo-badge-pink" style="margin-bottom: 15px;">Deep Dive</span>
+            <h2 class="section-title" style="text-shadow: 3px 3px 0px var(--accent-pink);">ANATOMY OF A STOMPER</h2>
+        </div>
+
+        <div class="anatomy-grid">
+            <div class="anatomy-tabs reveal-element">
+                <!-- Tab 1 -->
+                <div class="anatomy-tab active" data-tab="upper">
+                    <h3>01 // Ripstop Shield Upper</h3>
+                    <p>Woven ripstop mesh structured with thick synthetic overlays. Offers weather protection and lock-in support.</p>
+                </div>
+                <!-- Tab 2 -->
+                <div class="anatomy-tab" data-tab="sole">
+                    <h3>02 // Tread-Active Cushion</h3>
+                    <p>Chunky vulcanized base with energy-rebound cores designed to withstand extreme impact forces.</p>
+                </div>
+                <!-- Tab 3 -->
+                <div class="anatomy-tab" data-tab="packaging">
+                    <h3>03 // Collector Box</h3>
+                    <p>Heavyweight cardboard packaging featuring structural graphics. A display piece on its own.</p>
+                </div>
+            </div>
+
+            <div class="anatomy-display reveal-element">
+                <img src="assets/sneaker_lace.png" alt="Tech Specs Display" class="anatomy-img" id="anatomy-showcase-img">
+                <div class="anatomy-display-text" id="anatomy-showcase-text">01 // Ripstop Shield Upper (Detailed Mesh Structure)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT SECTION (ASYMMETRIC GRID - 6 SNEAKERS) -->
+    <section class="products-section" id="shop">
+        <div class="section-header reveal-element">
+            <div>
+                <span class="neo-badge neo-badge-blue" style="margin-bottom: 12px;">Hot Releases</span>
+                <h2 class="section-title">THE SNEAKER GRID</h2>
+            </div>
+            <p class="section-subtitle">
+                Engineered with high-traction vulcanized outsoles and ultra-breathable mesh. Grab your color before it sells out.
+            </p>
+        </div>
+
+        <div class="product-grid">
+            <!-- Product Card 1: Orange (Tilted Left) -->
+            <div class="neo-card interactive product-card rotate-left reveal-element">
+                <div class="product-img-container">
+                    <span class="neo-badge neo-badge-orange product-badge">Trending</span>
+                    <img src="assets/sneaker_orange.png" alt="STOMP Neon Orange" class="product-card-img">
+                </div>
+                <div class="product-details">
+                    <div class="product-meta">
+                        <span class="product-category">Running / Lifestyle</span>
+                        <span class="product-price">$189</span>
+                    </div>
+                    <h3 class="product-title">STOMP Orange</h3>
+                    <div class="product-options">
+                        <div class="form-label">Select Size (US)</div>
+                        <div class="size-selector">
+                            <button class="size-btn">8</button>
+                            <button class="size-btn active">9</button>
+                            <button class="size-btn">10</button>
+                            <button class="size-btn">11</button>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="neo-btn neo-btn-orange add-to-cart-btn" data-product="STOMP Orange">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 2: Blue (Tilted Right) -->
+            <div class="neo-card interactive product-card rotate-right reveal-element" style="transition-delay: 0.05s;">
+                <div class="product-img-container">
+                    <span class="neo-badge neo-badge-blue product-badge">Limited</span>
+                    <img src="assets/sneaker_blue.png" alt="STOMP Electric Blue" class="product-card-img">
+                </div>
+                <div class="product-details">
+                    <div class="product-meta">
+                        <span class="product-category">Running / Lifestyle</span>
+                        <span class="product-price">$189</span>
+                    </div>
+                    <h3 class="product-title">STOMP Blue</h3>
+                    <div class="product-options">
+                        <div class="form-label">Select Size (US)</div>
+                        <div class="size-selector">
+                            <button class="size-btn">8</button>
+                            <button class="size-btn">9</button>
+                            <button class="size-btn active">10</button>
+                            <button class="size-btn">11</button>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="neo-btn neo-btn-blue add-to-cart-btn" data-product="STOMP Blue">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 3: Green (Tilted Left) -->
+            <div class="neo-card interactive product-card rotate-left reveal-element" style="transition-delay: 0.1s;">
+                <div class="product-img-container">
+                    <span class="neo-badge neo-badge-pink product-badge">New Drop</span>
+                    <img src="assets/sneaker_green.png" alt="STOMP Neon Green" class="product-card-img">
+                </div>
+                <div class="product-details">
+                    <div class="product-meta">
+                        <span class="product-category">Running / Lifestyle</span>
+                        <span class="product-price">$189</span>
+                    </div>
+                    <h3 class="product-title">STOMP Green</h3>
+                    <div class="product-options">
+                        <div class="form-label">Select Size (US)</div>
+                        <div class="size-selector">
+                            <button class="size-btn">8</button>
+                            <button class="size-btn active">9</button>
+                            <button class="size-btn">10</button>
+                            <button class="size-btn">11</button>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="neo-btn neo-btn-yellow add-to-cart-btn" data-product="STOMP Green">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 4: Yellow (Tilted Right) -->
+            <div class="neo-card interactive product-card rotate-right reveal-element" style="transition-delay: 0.15s;">
+                <div class="product-img-container">
+                    <span class="neo-badge neo-badge-orange product-badge">Hot</span>
+                    <img src="assets/sneaker_yellow.png" alt="STOMP Cyber Yellow" class="product-card-img">
+                </div>
+                <div class="product-details">
+                    <div class="product-meta">
+                        <span class="product-category">Running / Lifestyle</span>
+                        <span class="product-price">$179</span>
+                    </div>
+                    <h3 class="product-title">STOMP Yellow</h3>
+                    <div class="product-options">
+                        <div class="form-label">Select Size (US)</div>
+                        <div class="size-selector">
+                            <button class="size-btn">8</button>
+                            <button class="size-btn">9</button>
+                            <button class="size-btn active">10</button>
+                            <button class="size-btn">11</button>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="neo-btn neo-btn-black add-to-cart-btn" data-product="STOMP Yellow">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 5: Black (Tilted Left) -->
+            <div class="neo-card interactive product-card rotate-left reveal-element" style="transition-delay: 0.2s;">
+                <div class="product-img-container">
+                    <span class="neo-badge neo-badge-pink product-badge">Stealth</span>
+                    <img src="assets/sneaker_black.png" alt="STOMP Stealth Black" class="product-card-img">
+                </div>
+                <div class="product-details">
+                    <div class="product-meta">
+                        <span class="product-category">Tactical / Street</span>
+                        <span class="product-price">$199</span>
+                    </div>
+                    <h3 class="product-title">STOMP Black</h3>
+                    <div class="product-options">
+                        <div class="form-label">Select Size (US)</div>
+                        <div class="size-selector">
+                            <button class="size-btn">8</button>
+                            <button class="size-btn active">9</button>
+                            <button class="size-btn">10</button>
+                            <button class="size-btn">11</button>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="neo-btn neo-btn-orange add-to-cart-btn" data-product="STOMP Black">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 6: Red (Tilted Right) -->
+            <div class="neo-card interactive product-card rotate-right reveal-element" style="transition-delay: 0.25s;">
+                <div class="product-img-container">
+                    <span class="neo-badge neo-badge-blue product-badge">Lava Drop</span>
+                    <img src="assets/sneaker_red.png" alt="STOMP Lava Red" class="product-card-img">
+                </div>
+                <div class="product-details">
+                    <div class="product-meta">
+                        <span class="product-category">Running / Lifestyle</span>
+                        <span class="product-price">$189</span>
+                    </div>
+                    <h3 class="product-title">STOMP Red</h3>
+                    <div class="product-options">
+                        <div class="form-label">Select Size (US)</div>
+                        <div class="size-selector">
+                            <button class="size-btn">8</button>
+                            <button class="size-btn">9</button>
+                            <button class="size-btn active">10</button>
+                            <button class="size-btn">11</button>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="neo-btn neo-btn-blue add-to-cart-btn" data-product="STOMP Red">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STREET TESTIMONIALS SECTION -->
+    <section class="testimonials-section" id="reviews">
+        <div class="section-header reveal-element">
+            <div>
+                <span class="neo-badge neo-badge-orange" style="margin-bottom: 12px;">Verified Feedback</span>
+                <h2 class="section-title" style="text-shadow: 3px 3px 0px var(--accent-yellow);">STREET TALK</h2>
+            </div>
+            <p class="section-subtitle">
+                Don't just take our word for it. Read raw, honest feedback from streetwear enthusiasts globally.
+            </p>
+        </div>
+
+        <div class="testimonials-grid">
+            <!-- Review 1 -->
+            <div class="neo-card interactive testimonial-card rotate-left reveal-element">
+                <p class="testimonial-text">"THE HEAVIEST PAIR IN MY RACK, BUT FEELS LIKE WALKING ON SPONGE. ABSOLUTE CLOUT IN COMFORT."</p>
+                <div class="testimonial-author">
+                    <span>@brutalist_fits</span>
+                    <span class="neo-badge neo-badge-pink">10/10 COMFORT</span>
+                </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="neo-card interactive testimonial-card rotate-right reveal-element" style="transition-delay: 0.1s;">
+                <p class="testimonial-text">"OUTLINE SHADOWS ON A SNEAKER? GENIUS DESIGN. GOT STOPPED 4 TIMES IN SOHO ON DAY 1."</p>
+                <div class="testimonial-author">
+                    <span>@solestomp_nyc</span>
+                    <span class="neo-badge neo-badge-blue">5-STAR DESIGN</span>
+                </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="neo-card interactive testimonial-card pink-card rotate-left reveal-element" style="transition-delay: 0.2s;">
+                <p class="testimonial-text">"THE BOX ALONE IS A PIECE OF ART. SHOUTOUT TO THE PACKAGING TEAM, ITS SITTING ON MY SHELF."</p>
+                <div class="testimonial-author">
+                    <span style="color: var(--white);">@hype_collector</span>
+                    <span class="neo-badge neo-badge-yellow">10/10 BOX Drop</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BRAND DIALOGUES (CONVERSATIONAL Q&A) -->
+    <section class="dialogues-section" id="dialogues">
+        <div class="dialogues-left-col reveal-element">
+            <span class="neo-badge neo-badge-orange" style="margin-bottom: 15px;">RAW Q&A</span>
+            <h2 class="dialogues-title">STOMP<br>DIALOGUES</h2>
+            <p style="font-size: 15px; opacity: 0.9; max-width: 320px; line-height: 1.6;">
+                A candid, straight-to-the-point dialogue addressing real user feedback, style concerns, and product performance.
+            </p>
+        </div>
+
+        <div class="dialogue-list">
+            <!-- Exchange 1 -->
+            <div class="dialogue-item reveal-element">
+                <div class="dialogue-user">
+                    "ARE THESE SNEAKERS HEAVY TO WALK IN?"
+                </div>
+                <div class="dialogue-brand dialogue-brand-yellow">
+                    <strong>STOMP:</strong> BOLD LOOK, LIGHTWEIGHT FEEL. WE ENGINEERED THE INNER CORE WITH HIGH-REBOUND RESPONSIVE FOAM AND WRAPPED IT IN A BREATHABLE RIPSTOP MESH CAGE. YOU STOMP THE STREETS, YOU DON'T DRAG THEM.
+                </div>
+            </div>
+
+            <!-- Exchange 2 -->
+            <div class="dialogue-item reveal-element" style="transition-delay: 0.05s;">
+                <div class="dialogue-user">
+                    "HOW TOUGH IS THE OUTSOLE FOR DAILY HARSH USE?"
+                </div>
+                <div class="dialogue-brand dialogue-brand-blue">
+                    <strong>STOMP:</strong> VULCANIZED RUBBER WITH ASYMMETRIC DEEP-TREAD WRAPPING. IT WAS DUST-TESTED AND DRAGGED ACROSS METROPOLITAN CONCRETE AND STEEL GRATES TO MAKE SURE IT RESISTS ABRASION.
+                </div>
+            </div>
+
+            <!-- Exchange 3 -->
+            <div class="dialogue-item reveal-element" style="transition-delay: 0.1s;">
+                <div class="dialogue-user">
+                    "IS THE COLLECTOR BOX ACTUALLY USEFUL?"
+                </div>
+                <div class="dialogue-brand dialogue-brand-pink">
+                    <strong>STOMP:</strong> EVERY PAIR SHIPS IN OUR COLLECTIBLE DOUBLE-WALLED CARDBOARD GRAPHIC BOX. IT IS STRUCTURALLY REINFORCED TO SERVE AS A PREMIUM DISPLAY PIECE IN YOUR ROOM, NOT SCRAP PAPER.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEWSLETTER / CLUB -->
+    <section class="newsletter-section" id="newsletter">
+        <div class="newsletter-text reveal-element reveal-left">
+            <h2>STOMP MEMBERS CLUB</h2>
+            <p>Subscribe to get notified about upcoming shoe drops, exclusive streetwear collaborations, and discount codes. Zero spam, pure heat.</p>
+        </div>
+        <div class="reveal-element reveal-right">
+            <form class="newsletter-form" id="newsletter-form" onsubmit="event.preventDefault();">
+                <input type="email" placeholder="YOUR.EMAIL@DOM.COM" class="neo-input" required>
+                <button type="submit" class="neo-btn neo-btn-black">SUBSCRIBE</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="reveal-element">
+        <div class="footer-top">
+            <div class="footer-info">
+                <a href="#" class="logo" style="font-size: 30px;">
+                    <svg class="logo-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="width: 30px; height: 30px; fill: var(--accent-orange); stroke: var(--black); stroke-width: 2.5px; filter: drop-shadow(2px 2px 0px var(--black)); margin-right: 8px;">
+                        <rect x="2" y="2" width="28" height="28" rx="4" fill="var(--accent-yellow)" stroke="var(--black)" stroke-width="2.5" />
+                        <rect x="8" y="7" width="16" height="4" rx="1" fill="var(--black)" />
+                        <rect x="10" y="13" width="12" height="4" rx="1" fill="var(--black)" />
+                        <rect x="11" y="19" width="10" height="4" rx="1" fill="var(--black)" />
+                        <circle cx="16" cy="25" r="2" fill="var(--black)" />
+                    </svg>
+                    STOMP.
+                </a>
+                <p>Neo-brutalist engineered footwear designed for high comfort, heavy aesthetics, and durability.</p>
+            </div>
+            <div class="footer-links">
+                <div class="links-column">
+                    <h4>SHOP</h4>
+                    <a href="#shop">New Releases</a>
+                    <a href="#shop">Special Drop</a>
+                    <a href="#shop">Collections</a>
+                </div>
+                <div class="links-column">
+                    <h4>STOMP CORP</h4>
+                    <a href="#">Our Story</a>
+                    <a href="#">Tech & Engineering</a>
+                    <a href="#">Careers</a>
+                </div>
+                <div class="links-column">
+                    <h4>SUPPORT</h4>
+                    <a href="#">Shipping FAQ</a>
+                    <a href="#">Return Policy</a>
+                    <a href="#">Contact Us</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>© 2026 STOMP Inc. All Rights Reserved.</div>
+            <div class="social-links">
+                <a href="#" class="social-icon">IG</a>
+                <a href="#" class="social-icon">TW</a>
+                <a href="#" class="social-icon">YT</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LOGIN & SIGNUP MODAL -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="neo-card modal-container" style="background-color: var(--white); color: var(--black);">
+            <div class="modal-header">
+                <h3 class="modal-title">MEMBERS PORTAL</h3>
+                <button class="modal-close" id="modal-close-btn">×</button>
+            </div>
+            
+            <div class="modal-tabs">
+                <div class="modal-tab active" id="tab-login">Login</div>
+                <div class="modal-tab" id="tab-signup">Register</div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="auth-form" onsubmit="event.preventDefault();">
+                <div class="form-group">
+                    <label class="form-label" for="auth-email">Email Address</label>
+                    <input type="email" id="auth-email" class="neo-input" placeholder="name@domain.com" required>
+                </div>
+                <div class="form-group" id="password-group">
+                    <label class="form-label" for="auth-pass">Password</label>
+                    <input type="password" id="auth-pass" class="neo-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="neo-btn neo-btn-orange modal-footer-btn" id="auth-submit-btn">
+                    Access Portal
+                </button>
+            </form>
+
+            <div class="divider">OR</div>
+
+            <!-- Google OAuth button -->
+            <button class="google-btn" id="google-login-btn">
+                <!-- SVG Google Icon -->
+                <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+                </svg>
+                Continue with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
