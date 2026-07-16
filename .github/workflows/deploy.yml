@@ -31,6 +31,8 @@ jobs:
         run: |
           cd portfolio
           npm run build
+          mkdir -p dist/stomp-landing-page
+          cp -r ../stomp-landing-page/* dist/stomp-landing-page/
 
       - name: Deploy to GitHub Pages 🍒
         uses: JamesIves/github-pages-deploy-action@v4
