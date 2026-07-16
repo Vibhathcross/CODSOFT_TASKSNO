@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STOMP | Modern Neo-Brutalist Shoe E-Commerce</title>
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 
@@ -133,7 +133,9 @@
             <div class="boot-card rotate-left reveal-element">
                 <div class="boot-img-container">
                     <span class="neo-badge neo-badge-orange" style="position: absolute; top: 10px; left: 10px; z-index: 10;">ANGLE 01</span>
-                    <img src="assets/boot_side.png" alt="STOMP Boot Side Profile" class="boot-card-img">
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <img src="assets/boot_side.png" alt="STOMP Boot Side Profile" class="boot-card-img">
+                    </div>
                 </div>
                 <div class="boot-desc">
                     <h3 class="boot-spec-title">Side Profile</h3>
@@ -147,8 +149,10 @@
             <div class="boot-card rotate-right reveal-element" style="transition-delay: 0.05s;">
                 <div class="boot-img-container">
                     <span class="neo-badge neo-badge-blue" style="position: absolute; top: 10px; left: 10px; z-index: 10;">ANGLE 02</span>
-                    <!-- Mirrored image -->
-                    <img src="assets/boot_side.png" alt="STOMP Boot Medial View" class="boot-card-img">
+                    <!-- Mirrored & Stealth Color-filtered image wrapper -->
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transform: scaleX(-1); filter: brightness(0.2) contrast(1.3) saturate(0.85);">
+                        <img src="assets/boot_side.png" alt="STOMP Boot Medial View" class="boot-card-img">
+                    </div>
                 </div>
                 <div class="boot-desc">
                     <h3 class="boot-spec-title">Medial Profile</h3>
@@ -162,7 +166,10 @@
             <div class="boot-card rotate-left reveal-element" style="transition-delay: 0.1s;">
                 <div class="boot-img-container">
                     <span class="neo-badge neo-badge-pink" style="position: absolute; top: 10px; left: 10px; z-index: 10;">DETAIL VIEW</span>
-                    <img src="assets/boot_side.png" alt="STOMP Boot Detail" class="boot-card-img">
+                    <!-- Zoomed-in collar wrapper -->
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transform: scale(1.9) translate(8px, 12px);">
+                        <img src="assets/boot_side.png" alt="STOMP Boot Detail" class="boot-card-img">
+                    </div>
                 </div>
                 <div class="boot-desc">
                     <h3 class="boot-spec-title">Collar Detail</h3>

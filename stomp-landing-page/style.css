@@ -590,7 +590,8 @@ nav {
 .boot-img-container {
     height: 200px;
     background-color: var(--gray-light);
-    border-bottom: var(--border-sm);
+    border: 3px solid var(--white);
+    box-shadow: 3px 3px 0px var(--black);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -601,10 +602,7 @@ nav {
 .boot-card-img {
     width: 130px;
     height: auto;
-    border: 3px solid var(--white);
-    box-shadow: 3px 3px 0px var(--black);
-    background-color: var(--white);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .boot-card:hover .boot-card-img {
