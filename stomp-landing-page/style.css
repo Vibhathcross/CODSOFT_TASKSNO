@@ -470,6 +470,11 @@ nav {
 
 .dot-orange { background-color: var(--accent-orange); }
 .dot-blue { background-color: var(--accent-blue); }
+.dot-green { background-color: #00ff66; }
+.dot-yellow { background-color: var(--accent-yellow); }
+.dot-black { background-color: var(--black); }
+.dot-red { background-color: #ff003c; }
+.dot-purple { background-color: #a855f7; }
 
 /* --- MARQUEE INFOBAR --- */
 .marquee-container {
