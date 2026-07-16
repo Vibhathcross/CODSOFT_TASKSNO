@@ -589,7 +589,7 @@ nav {
 
 .boot-img-container {
     height: 200px;
-    background-color: var(--gray-light);
+    background-color: var(--white);
     border: 3px solid var(--white);
     box-shadow: 3px 3px 0px var(--black);
     display: flex;
