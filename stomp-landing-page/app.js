@@ -84,10 +84,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const color = dot.getAttribute('data-color');
             
+            // Reset filter
+            heroSneakerImg.style.filter = '';
+            
             if (color === 'orange') {
                 heroSneakerImg.src = 'assets/sneaker_orange.png';
                 coloredHeroText.textContent = 'STREETS';
-                coloredHeroText.className = ''; // remove blue-text
+                coloredHeroText.className = ''; 
                 heroShoeBadge.textContent = 'NEW ARRIVAL';
                 heroShoeBadge.className = 'neo-badge neo-badge-orange';
                 heroCtaBuy.className = 'neo-btn neo-btn-orange';
@@ -98,6 +101,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 heroShoeBadge.textContent = 'LIMITED EDITION';
                 heroShoeBadge.className = 'neo-badge neo-badge-blue';
                 heroCtaBuy.className = 'neo-btn neo-btn-blue';
+            } else if (color === 'green') {
+                heroSneakerImg.src = 'assets/sneaker_green.png';
+                coloredHeroText.textContent = 'ACTIVE';
+                coloredHeroText.className = '';
+                heroShoeBadge.textContent = 'NEW DROP';
+                heroShoeBadge.className = 'neo-badge neo-badge-pink';
+                heroCtaBuy.className = 'neo-btn neo-btn-yellow';
+            } else if (color === 'yellow') {
+                heroSneakerImg.src = 'assets/sneaker_yellow.png';
+                coloredHeroText.textContent = 'MOTION';
+                coloredHeroText.className = 'blue-text';
+                heroShoeBadge.textContent = 'CYBER SERIES';
+                heroShoeBadge.className = 'neo-badge neo-badge-orange';
+                heroCtaBuy.className = 'neo-btn neo-btn-black';
+            } else if (color === 'black') {
+                heroSneakerImg.src = 'assets/sneaker_black.png';
+                coloredHeroText.textContent = 'SHADOW';
+                coloredHeroText.className = '';
+                heroShoeBadge.textContent = 'STEALTH DROP';
+                heroShoeBadge.className = 'neo-badge neo-badge-pink';
+                heroCtaBuy.className = 'neo-btn neo-btn-orange';
+            } else if (color === 'red') {
+                heroSneakerImg.src = 'assets/sneaker_red.png';
+                coloredHeroText.textContent = 'FORCE';
+                coloredHeroText.className = 'blue-text';
+                heroShoeBadge.textContent = 'LAVA EDITION';
+                heroShoeBadge.className = 'neo-badge neo-badge-blue';
+                heroCtaBuy.className = 'neo-btn neo-btn-blue';
+            } else if (color === 'purple') {
+                heroSneakerImg.src = 'assets/sneaker_orange.png';
+                heroSneakerImg.style.filter = 'hue-rotate(270deg) saturate(1.3)';
+                coloredHeroText.textContent = 'CLOUT';
+                coloredHeroText.className = '';
+                heroShoeBadge.textContent = 'SPECIAL RUN';
+                heroShoeBadge.className = 'neo-badge neo-badge-pink';
+                heroCtaBuy.className = 'neo-btn neo-btn-yellow';
             }
             
             // Mini scale bounce on shoe swap
@@ -105,8 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 heroSneakerImg.style.transform = '';
             }, 150);
-            
-            showToast(`Swapped to ${color.toUpperCase()} colorway!`, 'info');
         });
     });
     
